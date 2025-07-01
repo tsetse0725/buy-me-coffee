@@ -61,7 +61,7 @@ export default function DetailsStep() {
 
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">
-            Welcome, <span className="lowercase">{username}</span>
+            Welcome <span className="lowercase">{username}</span>
           </h1>
           <p className="text-sm text-gray-500">
             Connect email and set a password
