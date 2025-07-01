@@ -9,12 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
+    "add": "^2.0.6",
+    "form": "^0.2.5",
+    "hook-form": "^0.0.1",
     "init": "^0.1.2",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.59.0",
     "shadcn": "^2.7.0",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
