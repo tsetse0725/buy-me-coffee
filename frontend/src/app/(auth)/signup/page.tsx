@@ -6,17 +6,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(3, "At least 3 characters")
-    .max(24, "Max 24 characters")
-    .regex(/^[a-zA-Z0-9_]+$/, "Only letters, numbers and _"),
+  username: z.string().min(3, "Min 3 characters"),
 });
-
 type FormData = z.infer<typeof schema>;
 
-export default function UsernameStep() {
+export default function SignupUsername() {
   const router = useRouter();
   const {
     register,
@@ -25,41 +19,47 @@ export default function UsernameStep() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
+    defaultValues: { username: "" },
   });
 
   const onSubmit = (data: FormData) => {
-    router.push(
-      `/signup/details?username=${encodeURIComponent(data.username)}`
-    );
+    router.push(`/signup/details?username=${encodeURIComponent(data.username)}`);
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md space-y-6"
+        noValidate
+        className="flex w-full max-w-sm flex-col gap-4"
       >
-        <h1 className="text-2xl font-semibold">Create Your Account</h1>
-        <div className="space-y-2">
-          <label className="block text-sm font-medium" htmlFor="username">
+        <h1 className="mb-2 text-2xl font-semibold">Choose a username</h1>
+
+        <div className="flex flex-col gap-1">
+          <label htmlFor="username" className="text-sm">
             Username
           </label>
           <input
             id="username"
-            placeholder="Enter username here"
+            type="text"
+            placeholder="Pick a name"
+            autoComplete="off"
             {...register("username")}
             className={`w-full rounded-md border px-4 py-2 outline-none transition ${
-              errors.username ? "border-red-500" : "border-gray-300"
+              errors.username
+                ? "border-red-500 focus:ring-red-400"
+                : "border-gray-200 focus:ring-black"
             }`}
           />
           {errors.username && (
             <p className="text-sm text-red-500">{errors.username.message}</p>
           )}
         </div>
+
         <button
           type="submit"
           disabled={!isValid}
-          className="w-full rounded-md bg-black text-white py-2 disabled:bg-gray-300"
+          className="w-full rounded-md bg-black py-2 text-white disabled:bg-gray-300"
         >
           Continue
         </button>

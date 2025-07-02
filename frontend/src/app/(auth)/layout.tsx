@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AuthLayout({
   children,
 }: {
@@ -5,16 +7,29 @@ export default function AuthLayout({
 }) {
   return (
     <div className="w-screen h-screen flex">
+
       <div className="w-1/2 h-full bg-[#FFDD00] flex flex-col items-center justify-center text-center px-8 relative">
-        <div className="absolute top-6 left-6 text-black font-semibold text-lg">
-          <span className="inline-block mr-1"></span>
-          <img src="/Logo.png" alt="/" />
+
+
+        <div className="absolute top-6 left-6 text-black font-semibold text-lg flex items-center">
+
+          <span className="inline-block mr-1 text-2xl"></span>
+          <Image
+            src="/Logo.png"
+            alt="Buy Me Coffee logo"
+            width={120}         
+            height={32}
+            priority        
+          />
         </div>
 
-        <img
+
+        <Image
           src="/illustration.png"
           alt="Coffee cup"
-          className="w-40 h-40 mb-8"
+          width={160}          
+          height={160}
+          className="w-40 h-40 mb-8"  
         />
 
         <h2 className="text-xl font-bold text-black mb-2">
@@ -25,6 +40,7 @@ export default function AuthLayout({
           think.
         </p>
       </div>
+
 
       <div className="w-1/2 h-full bg-white flex items-center justify-center">
         {children}

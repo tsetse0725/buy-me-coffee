@@ -1,11 +1,11 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useState } from "react";
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -16,13 +16,21 @@ const schema = z.object({
     .regex(/[a-z]/, "1 lowercase required")
     .regex(/[0-9]/, "1 number required"),
 });
-
 type FormData = z.infer<typeof schema>;
 
-export default function DetailsStep() {
-  const params = useSearchParams();
+export default function SignupDetails() {
   const router = useRouter();
-  const username = params.get("username") || "friend";
+  const params = useSearchParams();
+
+  const username = params.get("username") ?? "";
+
+  /* Хэрвээ username-гүй бол 1-р шат руу буцаана */
+  useEffect(() => {
+    if (!username) router.replace("/signup");
+  }, [username, router]);
+
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -31,54 +39,59 @@ export default function DetailsStep() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
+    defaultValues: { email: "", password: "" },
   });
 
-  const [loading, setLoading] = useState(false);
-
   const onSubmit = async (data: FormData) => {
+    setErrorMsg(null);
     setLoading(true);
     try {
-      console.table({ username, ...data });
-    } catch (err) {
-      console.error(err);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/signup`,
+        { username, ...data },
+      );
+console.log("✅ ENV:", process.env.NEXT_PUBLIC_API_URL);
+      /* token localStorage — түр */
+      localStorage.setItem("token", res.data.token);
+
+      /* Амжилттай → home */
+      router.replace("/");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const apiErr = error as AxiosError<{ message?: string }>;
+        setErrorMsg(apiErr.response?.data?.message ?? "Signup failed.");
+      } else {
+        setErrorMsg("Unexpected error.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md space-y-6"
+        noValidate
+        className="flex w-full max-w-sm flex-col gap-4"
       >
-        <Link
-          href="/login"
-          className="absolute top-6 right-6 bg-gray-100 px-5 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
-        >
-          Log in
-        </Link>
+        <h1 className="mb-2 text-2xl font-semibold">Create your account</h1>
 
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold">
-            Welcome <span className="lowercase">{username}</span>
-          </h1>
-          <p className="text-sm text-gray-500">
-            Connect email and set a password
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium" htmlFor="email">
+        {/* Email */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="email" className="text-sm">
             Email
           </label>
           <input
             id="email"
             type="email"
-            placeholder="Enter email here"
+            placeholder="Enter email"
+            autoComplete="email"
             {...register("email")}
-            className={`w-full rounded-md border px-4 py-2 outline-none ${
-              errors.email ? "border-red-500" : "border-gray-300"
+            className={`w-full rounded-md border px-4 py-2 outline-none transition ${
+              errors.email
+                ? "border-red-500 focus:ring-red-400"
+                : "border-gray-200 focus:ring-black"
             }`}
           />
           {errors.email && (
@@ -86,32 +99,38 @@ export default function DetailsStep() {
           )}
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium" htmlFor="password">
+        {/* Password */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="password" className="text-sm">
             Password
           </label>
           <input
             id="password"
             type="password"
-            placeholder="Enter password here"
+            placeholder="Enter password"
+            autoComplete="new-password"
             {...register("password")}
-            className={`w-full rounded-md border px-4 py-2 outline-none ${
-              errors.password ? "border-red-500" : "border-gray-300"
+            className={`w-full rounded-md border px-4 py-2 outline-none transition ${
+              errors.password
+                ? "border-red-500 focus:ring-red-400"
+                : "border-gray-200 focus:ring-black"
             }`}
           />
           {errors.password && (
-            <p className="text-sm text-red-500 whitespace-pre-line">
-              {errors.password.message}
-            </p>
+            <p className="text-sm text-red-500">{errors.password.message}</p>
           )}
         </div>
+
+        {errorMsg && (
+          <p className="text-center text-sm text-red-600">{errorMsg}</p>
+        )}
 
         <button
           type="submit"
           disabled={!isValid || loading}
-          className="w-full rounded-md bg-black text-white py-2 disabled:bg-gray-300"
+          className="w-full rounded-md bg-black py-2 text-white disabled:bg-gray-300"
         >
-          {loading ? "Loading..." : "Continue"}
+          {loading ? "Signing up…" : "Sign up"}
         </button>
       </form>
     </div>
