@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+/* ---------------- zod schema ---------------- */
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z
@@ -20,16 +21,16 @@ type FormData = z.infer<typeof schema>;
 
 export default function SignupDetails() {
   const router = useRouter();
-  const params = useSearchParams();
-
+  const params  = useSearchParams();
   const username = params.get("username") ?? "";
 
+  /* username алга бол эхний алхам руу буцаана */
   useEffect(() => {
     if (!username) router.replace("/signup");
   }, [username, router]);
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]   = useState(false);
 
   const {
     register,
@@ -38,34 +39,34 @@ export default function SignupDetails() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
-    defaultValues: { email: "", password: "" },
   });
 
+  /* --------------- submit --------------- */
   const onSubmit = async (data: FormData) => {
     setErrorMsg(null);
     setLoading(true);
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/signup`,
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/signup`,
         { username, ...data }
       );
-      console.log(" ENV:", process.env.NEXT_PUBLIC_API_URL);
 
-      localStorage.setItem("token", res.data.token);
+      /* 🔑  Токен хадгалахгүй! */
+      localStorage.removeItem("token");
 
-      router.replace("/");
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        const apiErr = error as AxiosError<{ message?: string }>;
+      /* ↪️  Login руу, амжилтын query параметртэй */
+      router.replace("/login?justSignedUp=1");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiErr = err as AxiosError<{ message?: string }>;
         setErrorMsg(apiErr.response?.data?.message ?? "Signup failed.");
-      } else {
-        setErrorMsg("Unexpected error.");
-      }
+      } else setErrorMsg("Unexpected error.");
     } finally {
       setLoading(false);
     }
   };
 
+  /* --------------- UI --------------- */
   return (
     <div className="flex h-full w-full items-center justify-center">
       <form
@@ -75,51 +76,40 @@ export default function SignupDetails() {
       >
         <h1 className="mb-2 text-2xl font-semibold">Create your account</h1>
 
+        {/* email */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="email" className="text-sm">
-            Email
-          </label>
+          <label className="text-sm" htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
             placeholder="Enter email"
-            autoComplete="email"
             {...register("email")}
-            className={`w-full rounded-md border px-4 py-2 outline-none transition ${
-              errors.email
-                ? "border-red-500 focus:ring-red-400"
-                : "border-gray-200 focus:ring-black"
+            className={`w-full rounded-md border px-4 py-2 outline-none ${
+              errors.email ? "border-red-500" : "border-gray-200"
             }`}
           />
-          {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
         </div>
 
+        {/* password */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="password" className="text-sm">
-            Password
-          </label>
+          <label className="text-sm" htmlFor="password">Password</label>
           <input
             id="password"
             type="password"
             placeholder="Enter password"
             autoComplete="new-password"
             {...register("password")}
-            className={`w-full rounded-md border px-4 py-2 outline-none transition ${
-              errors.password
-                ? "border-red-500 focus:ring-red-400"
-                : "border-gray-200 focus:ring-black"
+            className={`w-full rounded-md border px-4 py-2 outline-none ${
+              errors.password ? "border-red-500" : "border-gray-200"
             }`}
           />
           {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
+            <p className="text-xs text-red-500">{errors.password.message}</p>
           )}
         </div>
 
-        {errorMsg && (
-          <p className="text-center text-sm text-red-600">{errorMsg}</p>
-        )}
+        {errorMsg && <p className="text-center text-sm text-red-600">{errorMsg}</p>}
 
         <button
           type="submit"

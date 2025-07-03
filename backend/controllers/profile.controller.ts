@@ -3,6 +3,7 @@ import { cloudinary } from "../utils/cloudinary";
 import { prisma } from "../utils/prisma";
 import streamifier from "streamifier";
 
+/* type for body (fields sent from frontend) */
 interface ProfileBody {
   name: string;
   about: string;
@@ -12,6 +13,7 @@ interface ProfileBody {
   successMessage?: string;
 }
 
+/* ───────────────── uploadAvatar (POST /profiles) ───────────────── */
 export const uploadAvatar = async (
   req: Request<{}, any, ProfileBody>,
   res: Response,
@@ -21,7 +23,7 @@ export const uploadAvatar = async (
     const file = req.file;
     if (!file) {
       res.status(400).json({ message: "No image uploaded" });
-      return;
+      return;                                  // void
     }
 
     const {
@@ -33,7 +35,8 @@ export const uploadAvatar = async (
       successMessage = "",
     } = req.body;
 
-    const uploaded = await new Promise<{ secure_url: string }>(
+    /* ---- Cloudinary upload ---- */
+    const { secure_url } = await new Promise<{ secure_url: string }>(
       (resolve, reject) => {
         const cldStream = cloudinary.uploader.upload_stream(
           { folder: "avatars", resource_type: "image" },
@@ -46,21 +49,61 @@ export const uploadAvatar = async (
       }
     );
 
-    const profile = await prisma.profile.create({
-      data: {
+    /* ---- Upsert profile ---- */
+    const profile = await prisma.profile.upsert({
+      where: { userId: Number(userId) },
+      create: {
         name,
         about,
-        avatarImage: uploaded.secure_url,
+        avatarImage: secure_url,
         socialMediaURL,
         backgroundImage,
         successMessage,
-        user: { connect: { id: Number(userId) } },
+        userId: Number(userId),
+      },
+      update: {
+        name,
+        about,
+        avatarImage: secure_url,
+        socialMediaURL,
+        backgroundImage,
+        successMessage,
       },
     });
 
-    res.status(201).json({ profile });
-  } catch (error) {
-    console.error(" [UPLOAD]", error);
-    next(error);
+    res.status(201).json(profile);             // ⬅️  Response-г *буцаахгүй*
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ───────────────── getProfile (GET /profiles/:userId) ───────────────── */
+export const getProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userId = Number(req.params.userId);
+
+    const profile = await prisma.profile.findUnique({
+      where: { userId },
+      select: {
+        id: true,
+        name: true,
+        about: true,
+        socialMediaURL: true,
+        avatarImage: true,
+      },
+    });
+
+    if (!profile) {
+      res.status(404).json({ message: "Profile not found" });
+      return;
+    }
+
+    res.json(profile);                         // ⬅️  Response-г *return хийхгүй*
+  } catch (err) {
+    next(err);
   }
 };

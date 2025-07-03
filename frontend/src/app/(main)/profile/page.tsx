@@ -1,16 +1,24 @@
-import ProfileForm from "@/app/_components/ProfileForm";
+"use client";
 
-export const metadata = {
-  title: "Complete your profile • Buy Me Coffee",
-};
+import { useState } from "react";
+import ProfileForm from "../../_components/ProfileForm";
+import PaymentForm from "../../_components/PaymentForm";
 
-export default function CompleteProfilePage() {
+export default function ProfileSetupPage() {
+  const [step, setStep] = useState<1 | 2>(1);
+
   return (
-    <div className="min-h-screen flex flex-col items-center pt-24">
-      <h1 className="text-2xl font-semibold mb-10">
-        Complete your profile page
-      </h1>
-      <ProfileForm />
-    </div>
+    <main className="max-w-2xl mx-auto mt-10 px-4">
+      {step === 1 && <ProfileForm onNext={() => setStep(2)} />}
+      {step === 2 && (
+        <PaymentForm
+          onBack={() => setStep(1)}
+          onFinish={() => {
+
+            window.location.href = "/dashboard";
+          }}
+        />
+      )}
+    </main>
   );
 }

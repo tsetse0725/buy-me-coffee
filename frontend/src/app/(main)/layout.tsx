@@ -1,11 +1,13 @@
+import "../globals.css";
+import Header from "../_components/Header";
+import { UserProvider } from "../_components/UserProvider";
+import type { ReactNode } from "react";
 
-import Header from "@/app/_components/Header";
-
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <div>
+    <UserProvider>
       <Header />
-      <main>{children}</main>
-    </div>
+      {children}
+    </UserProvider>
   );
 }
