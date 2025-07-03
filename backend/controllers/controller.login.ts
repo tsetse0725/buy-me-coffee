@@ -13,31 +13,27 @@ interface LoginBody {
 export const loginController: RequestHandler<{}, any, LoginBody> = async (
   req,
   res,
-  next,
+  next
 ) => {
   try {
     const { email, password } = req.body;
 
-    /* 1️⃣ Хэрэглэгч шалгах */
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
-      return; // <- void
+      return;
     }
 
-    /* 2️⃣ Нууц үг тааруулах */
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
     }
 
-    /* 3️⃣ JWT үүсгэх */
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    /* 4️⃣ Амжилттай хариу */
     res.json({
       token,
       user: { id: user.id, email: user.email, username: user.username },

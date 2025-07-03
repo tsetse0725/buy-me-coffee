@@ -24,7 +24,6 @@ export default function SignupDetails() {
 
   const username = params.get("username") ?? "";
 
-  /* Хэрвээ username-гүй бол 1-р шат руу буцаана */
   useEffect(() => {
     if (!username) router.replace("/signup");
   }, [username, router]);
@@ -48,13 +47,12 @@ export default function SignupDetails() {
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/signup`,
-        { username, ...data },
+        { username, ...data }
       );
-console.log("✅ ENV:", process.env.NEXT_PUBLIC_API_URL);
-      /* token localStorage — түр */
+      console.log(" ENV:", process.env.NEXT_PUBLIC_API_URL);
+
       localStorage.setItem("token", res.data.token);
 
-      /* Амжилттай → home */
       router.replace("/");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -77,7 +75,6 @@ console.log("✅ ENV:", process.env.NEXT_PUBLIC_API_URL);
       >
         <h1 className="mb-2 text-2xl font-semibold">Create your account</h1>
 
-        {/* Email */}
         <div className="flex flex-col gap-1">
           <label htmlFor="email" className="text-sm">
             Email
@@ -99,7 +96,6 @@ console.log("✅ ENV:", process.env.NEXT_PUBLIC_API_URL);
           )}
         </div>
 
-        {/* Password */}
         <div className="flex flex-col gap-1">
           <label htmlFor="password" className="text-sm">
             Password

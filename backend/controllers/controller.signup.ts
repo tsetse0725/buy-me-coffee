@@ -13,7 +13,7 @@ interface SignupBody {
 
 export const signupController: RequestHandler<{}, any, SignupBody> = async (
   req,
-  res,
+  res
 ) => {
   try {
     const { email, password, username } = req.body;
@@ -37,7 +37,6 @@ export const signupController: RequestHandler<{}, any, SignupBody> = async (
       data: { email, password: hashedPassword, username },
     });
 
-    /* ✅  JWT токен үүсгэж буцаана */
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
     });

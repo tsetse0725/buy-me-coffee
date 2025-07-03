@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface User {
   id: number;
@@ -11,7 +11,7 @@ interface User {
 interface DecodedToken {
   userId: number;
   email: string;
-  exp: number; // optional
+  exp: number;
 }
 
 interface Ctx {
@@ -29,7 +29,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     if (!token) return;
 
     try {
-      const decoded = jwtDecode<DecodedToken>(token);  // ✅ no 'any'
+      const decoded = jwtDecode<DecodedToken>(token);
       setUser({ id: decoded.userId, email: decoded.email });
     } catch {
       localStorage.removeItem("token");

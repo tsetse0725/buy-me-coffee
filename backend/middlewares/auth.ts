@@ -14,22 +14,19 @@ declare global {
 }
 
 export const authRequired: RequestHandler = (req, res, next) => {
-  const header = req.headers.authorization;       // Bearer xxx
+  const header = req.headers.authorization;
 
-  // ─── 1) Token байхгүй тохиолдол ───────────────────────────────
   if (!header?.startsWith("Bearer ")) {
     res.status(401).json({ message: "Missing token" });
-    return;                                       // ⇦ зөвхөн void буцааж байна
+    return;
   }
 
-  // ─── 2) Token байгаа бол шалгана ───────────────────────────────
   const token = header.split(" ")[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     req.userId = decoded.userId;
-    next();                                       // бүх зүйл OK → дараагийн middleware
+    next();
   } catch (err) {
     res.status(401).json({ message: "Invalid token" });
-    // return;  // хүсвэл энд бас `return;` -г тавьж болно (void)
   }
 };
