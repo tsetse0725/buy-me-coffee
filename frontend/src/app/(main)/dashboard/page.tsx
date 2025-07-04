@@ -21,12 +21,10 @@ export default function DashboardPage() {
     if (!user) return;
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-    /* earnings */
     fetch(`${base}/donations/earnings/${user.id}?days=30`)
       .then((r) => r.json())
       .then((d) => setEarnings(d.earnings));
 
-    /* recent donations */
     fetch(`${base}/donations/recent/${user.id}?limit=10`)
       .then((r) => r.json())
       .then((d) => setDonations(d));
@@ -36,17 +34,14 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8">
-      {/* ---------- TOP ---------- */}
       <section className="mb-8 border p-6 rounded">
-       {user && user.email && (
-  <h2 className="text-xl font-semibold mb-1">
-    {user.email.split("@")[0]}
-  </h2>
-)}
+        {user && user.email && (
+          <h2 className="text-xl font-semibold mb-1">
+            {user.email.split("@")[0]}
+          </h2>
+        )}
 
-        <p className="text-sm text-gray-500 mb-4">
-          buymecoffee.com/{user.id}
-        </p>
+        <p className="text-sm text-gray-500 mb-4">buymecoffee.com/{user.id}</p>
 
         <div className="flex items-center gap-4">
           <h3 className="text-lg font-medium">Earnings</h3>
@@ -58,7 +53,6 @@ export default function DashboardPage() {
         <p className="text-4xl font-bold mt-2">${earnings}</p>
       </section>
 
-      {/* ---------- RECENT TRANSACTIONS ---------- */}
       <section>
         <h3 className="text-lg font-medium mb-3">Recent transactions</h3>
         <div className="space-y-4">

@@ -9,13 +9,13 @@ export default function Header() {
   const { user, profile, setUser } = useAuth();
   const [open, setOpen] = useState(false);
 
-  if (!user) return null; // not logged in
+  if (!user) return null;
 
-  /* avatar URL — backend + path */
   const backend = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
   const avatarSrc = profile?.avatarImage
-    ? profile.avatarImage.startsWith("http") ? profile.avatarImage
-    : `${backend}/${profile.avatarImage}`
+    ? profile.avatarImage.startsWith("http")
+      ? profile.avatarImage
+      : `${backend}/${profile.avatarImage}`
     : "/placeholder.jpg";
 
   const logout = () => {
@@ -32,15 +32,27 @@ export default function Header() {
       </h1>
 
       <div className="relative">
-        <button onClick={() => setOpen(!open)} className="flex items-center gap-2 hover:opacity-80">
-          <Image src={avatarSrc} alt="avatar" width={32} height={32} className="rounded-full object-cover" />
+        <button
+          onClick={() => setOpen(!open)}
+          className="flex items-center gap-2 hover:opacity-80"
+        >
+          <Image
+            src={avatarSrc}
+            alt="avatar"
+            width={32}
+            height={32}
+            className="rounded-full object-cover"
+          />
           <span className="hidden sm:inline">{profile?.name ?? "Guest"}</span>
           <ChevronDown size={16} />
         </button>
 
         {open && (
           <div className="absolute right-0 mt-2 w-32 border rounded bg-white shadow z-10">
-            <button onClick={logout} className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100">
+            <button
+              onClick={logout}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+            >
               Logout
             </button>
           </div>

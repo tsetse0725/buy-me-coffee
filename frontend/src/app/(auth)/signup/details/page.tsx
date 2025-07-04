@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-/* ---------------- zod schema ---------------- */
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z
@@ -21,16 +20,15 @@ type FormData = z.infer<typeof schema>;
 
 export default function SignupDetails() {
   const router = useRouter();
-  const params  = useSearchParams();
+  const params = useSearchParams();
   const username = params.get("username") ?? "";
 
-  /* username алга бол эхний алхам руу буцаана */
   useEffect(() => {
     if (!username) router.replace("/signup");
   }, [username, router]);
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -41,7 +39,6 @@ export default function SignupDetails() {
     mode: "onChange",
   });
 
-  /* --------------- submit --------------- */
   const onSubmit = async (data: FormData) => {
     setErrorMsg(null);
     setLoading(true);
@@ -51,10 +48,8 @@ export default function SignupDetails() {
         { username, ...data }
       );
 
-      /* 🔑  Токен хадгалахгүй! */
       localStorage.removeItem("token");
 
-      /* ↪️  Login руу, амжилтын query параметртэй */
       router.replace("/login?justSignedUp=1");
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -66,7 +61,6 @@ export default function SignupDetails() {
     }
   };
 
-  /* --------------- UI --------------- */
   return (
     <div className="flex h-full w-full items-center justify-center">
       <form
@@ -76,9 +70,10 @@ export default function SignupDetails() {
       >
         <h1 className="mb-2 text-2xl font-semibold">Create your account</h1>
 
-        {/* email */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="email">Email</label>
+          <label className="text-sm" htmlFor="email">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -88,12 +83,15 @@ export default function SignupDetails() {
               errors.email ? "border-red-500" : "border-gray-200"
             }`}
           />
-          {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-xs text-red-500">{errors.email.message}</p>
+          )}
         </div>
 
-        {/* password */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="password">Password</label>
+          <label className="text-sm" htmlFor="password">
+            Password
+          </label>
           <input
             id="password"
             type="password"
@@ -109,7 +107,9 @@ export default function SignupDetails() {
           )}
         </div>
 
-        {errorMsg && <p className="text-center text-sm text-red-600">{errorMsg}</p>}
+        {errorMsg && (
+          <p className="text-center text-sm text-red-600">{errorMsg}</p>
+        )}
 
         <button
           type="submit"

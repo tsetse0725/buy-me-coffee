@@ -1,4 +1,3 @@
-/* src/app/(auth)/login/page.tsx */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-/* ---------------- zod schema ---------------- */
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Min 8 characters"),
@@ -21,7 +19,6 @@ export default function LoginPage() {
   const params = useSearchParams();
   const justSignedUp = params.get("justSignedUp") === "1";
 
-  /* ---------- 🌟 redirect if already logged in ---------- */
   useEffect(() => {
     if (localStorage.getItem("token")) {
       router.replace("/dashboard");
@@ -49,8 +46,7 @@ export default function LoginPage() {
         data
       );
       localStorage.setItem("token", res.data.token);
-      router.replace("/profile"); // → эхлээд профайл бөглүүлэх бол
-      // router.replace("/dashboard"); // карт/profile бүрэн бол шууд dashboard
+      router.replace("/profile");
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const apiErr = err as AxiosError<{ message?: string }>;
@@ -61,7 +57,6 @@ export default function LoginPage() {
     }
   };
 
-  /* ---------------- UI ---------------- */
   return (
     <div className="relative flex h-full w-full items-center justify-center">
       <Link

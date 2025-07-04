@@ -31,7 +31,6 @@ interface Props {
   onFinish: () => void;
 }
 
-
 function LoadingScreen() {
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-6">
@@ -40,7 +39,7 @@ function LoadingScreen() {
           <div
             key={i}
             className="absolute inset-0 animate-bean"
-            style={{ animationDelay: `${i * 0.2}s` }}
+            style={{ animationDelay: `${i * 3}s` }}
           >
             <Image
               src="/bean.png"
@@ -77,7 +76,6 @@ function LoadingScreen() {
   );
 }
 
-
 export default function PaymentForm({ onBack, onFinish }: Props) {
   const router = useRouter();
   const {
@@ -91,7 +89,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
 
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-
 
   const submit = async (data: FormData) => {
     setLoading(true);
@@ -112,7 +109,7 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
         }),
       });
 
-      setRedirecting(true);      // 👉 loader
+      setRedirecting(true);
       onFinish?.();
       router.replace("/dashboard");
     } catch {
@@ -122,9 +119,7 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
     }
   };
 
-
   if (redirecting) return <LoadingScreen />;
-
 
   return (
     <form
@@ -135,7 +130,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
       <p className="text-sm text-gray-500 mb-4">
         Enter location and payment details
       </p>
-
 
       <div>
         <label className="block text-sm font-medium mb-1">Select country</label>
@@ -157,7 +151,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
           </p>
         )}
       </div>
-
 
       {(() => {
         const nameFields = ["firstName", "lastName"] as const;
@@ -184,7 +177,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
         );
       })()}
 
-
       <div>
         <label className="block text-sm font-medium mb-1">
           Enter card number
@@ -201,9 +193,7 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
         )}
       </div>
 
-
       <div className="grid grid-cols-3 gap-4">
-
         <div>
           <label className="block text-sm font-medium mb-1">Expires</label>
           <select
@@ -224,7 +214,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
             </p>
           )}
         </div>
-
 
         <div>
           <label className="block text-sm font-medium mb-1">Year</label>
@@ -247,7 +236,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
           )}
         </div>
 
-
         <div>
           <label className="block text-sm font-medium mb-1">CVC</label>
           <input
@@ -262,7 +250,6 @@ export default function PaymentForm({ onBack, onFinish }: Props) {
           )}
         </div>
       </div>
-
 
       <div className="flex justify-between pt-4">
         <button

@@ -1,4 +1,3 @@
-/* src/server.ts */
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -12,16 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ─── 1. Static uploads ─── */
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
-/* ─── Routes ─── */
-app.use(authRoutes);                      // /login, /signup ...
-app.use("/profiles", profileRoutes);      // /profiles & /profiles/upload-avatar
+app.use(authRoutes);
+app.use("/profiles", profileRoutes);
 app.use("/bankcards", bankcardRoutes);
-app.use("/donations", donationRoutes);    // /bankcards
+app.use("/donations", donationRoutes);
 
-/* ─── 2. Global error handler (optional) ─── */
 app.use((err: any, _req: any, res: any, _next: any) => {
   console.error(err);
   res.status(500).json({ message: err.message ?? "Internal error" });

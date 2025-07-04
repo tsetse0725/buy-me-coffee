@@ -1,14 +1,10 @@
 import { RequestHandler } from "express";
 import { prisma } from "../utils/prisma";
-
-/* ------------------------------------------------------------
-   POST /bankcards
-   Body: {
-     userId, country, firstName, lastName,
-     cardNumber, expiryMonth, expiryYear
-   }
-------------------------------------------------------------- */
-export const createOrUpdateBankCard: RequestHandler = async (req, res, next): Promise<void> => {
+export const createOrUpdateBankCard: RequestHandler = async (
+  req,
+  res,
+  next
+): Promise<void> => {
   try {
     const {
       userId,
@@ -16,8 +12,8 @@ export const createOrUpdateBankCard: RequestHandler = async (req, res, next): Pr
       firstName,
       lastName,
       cardNumber,
-      expiryMonth,   // 1‒12
-      expiryYear,    // 4 оронтой
+      expiryMonth,
+      expiryYear,
     } = req.body;
 
     if (
@@ -60,10 +56,11 @@ export const createOrUpdateBankCard: RequestHandler = async (req, res, next): Pr
   }
 };
 
-/* ------------------------------------------------------------
-   GET /bankcards/:userId
-------------------------------------------------------------- */
-export const getBankCard: RequestHandler = async (req, res, next): Promise<void> => {
+export const getBankCard: RequestHandler = async (
+  req,
+  res,
+  next
+): Promise<void> => {
   try {
     const userId = Number(req.params.userId);
 
@@ -86,17 +83,21 @@ export const getBankCard: RequestHandler = async (req, res, next): Promise<void>
       return;
     }
 
-    const masked = card.cardNumber.replace(/\d{12}(\d{4})/, "****-****-****-$1");
+    const masked = card.cardNumber.replace(
+      /\d{12}(\d{4})/,
+      "****-****-****-$1"
+    );
     res.json({ ...card, cardNumber: masked });
   } catch (err) {
     next(err);
   }
 };
 
-/* ------------------------------------------------------------
-   DELETE /bankcards/:userId
-------------------------------------------------------------- */
-export const deleteBankCard: RequestHandler = async (req, res, next): Promise<void> => {
+export const deleteBankCard: RequestHandler = async (
+  req,
+  res,
+  next
+): Promise<void> => {
   try {
     const userId = Number(req.params.userId);
     await prisma.bankCard.delete({ where: { userId } });

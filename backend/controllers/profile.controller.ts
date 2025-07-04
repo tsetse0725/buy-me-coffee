@@ -3,7 +3,6 @@ import { cloudinary } from "../utils/cloudinary";
 import { prisma } from "../utils/prisma";
 import streamifier from "streamifier";
 
-/* type for body (fields sent from frontend) */
 interface ProfileBody {
   name: string;
   about: string;
@@ -13,7 +12,6 @@ interface ProfileBody {
   successMessage?: string;
 }
 
-/* ───────────────── uploadAvatar (POST /profiles) ───────────────── */
 export const uploadAvatar = async (
   req: Request<{}, any, ProfileBody>,
   res: Response,
@@ -23,7 +21,7 @@ export const uploadAvatar = async (
     const file = req.file;
     if (!file) {
       res.status(400).json({ message: "No image uploaded" });
-      return;                                  // void
+      return;
     }
 
     const {
@@ -35,7 +33,6 @@ export const uploadAvatar = async (
       successMessage = "",
     } = req.body;
 
-    /* ---- Cloudinary upload ---- */
     const { secure_url } = await new Promise<{ secure_url: string }>(
       (resolve, reject) => {
         const cldStream = cloudinary.uploader.upload_stream(
@@ -49,7 +46,6 @@ export const uploadAvatar = async (
       }
     );
 
-    /* ---- Upsert profile ---- */
     const profile = await prisma.profile.upsert({
       where: { userId: Number(userId) },
       create: {
@@ -71,13 +67,12 @@ export const uploadAvatar = async (
       },
     });
 
-    res.status(201).json(profile);             // ⬅️  Response-г *буцаахгүй*
+    res.status(201).json(profile);
   } catch (err) {
     next(err);
   }
 };
 
-/* ───────────────── getProfile (GET /profiles/:userId) ───────────────── */
 export const getProfile = async (
   req: Request,
   res: Response,
@@ -102,7 +97,7 @@ export const getProfile = async (
       return;
     }
 
-    res.json(profile);                         // ⬅️  Response-г *return хийхгүй*
+    res.json(profile);
   } catch (err) {
     next(err);
   }

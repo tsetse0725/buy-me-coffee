@@ -11,7 +11,7 @@ export default function LoadingScreen() {
           <div
             key={i}
             className="absolute inset-0 animate-bean"
-            style={{ animationDelay: `${i * 0.2}s` }}
+            style={{ animationDelay: `${i * 3}s` }}
           >
             <Image src="/bean.png" alt="bean" className="w-6 h-6 mx-auto" />
           </div>
