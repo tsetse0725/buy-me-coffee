@@ -5,7 +5,6 @@ import Image from "next/image";
 import { CopyIcon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// ──────────────── types ────────────────
 export type UserType = {
   id: number | string;
   email: string;
@@ -24,13 +23,12 @@ export interface EarningsTotals {
 
 interface Props {
   user: UserType;
-  profile: ProfileType;
+  profile?: ProfileType;
   earnings: EarningsTotals;
   range: "last30" | "last90" | "all";
   setRange: React.Dispatch<React.SetStateAction<"last30" | "last90" | "all">>;
 }
 
-// ──────────────── component ────────────────
 export default function ProfileSummary({
   user,
   profile,
@@ -40,10 +38,11 @@ export default function ProfileSummary({
 }: Props) {
   const avatar =
     profile?.avatarImage ??
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&size=128`;
-const displayName =
-  profile?.name ??
-  (user?.email ? user.email.split("@")[0] : "Guest");
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      user.email
+    )}&size=128`;
+  const displayName =
+    profile?.name ?? (user?.email ? user.email.split("@")[0] : "Guest");
 
   const [open, setOpen] = useState(false);
 
@@ -67,7 +66,6 @@ const displayName =
 
   return (
     <section className="border border-gray-300 rounded-xl p-6 space-y-6">
-      {/* top row */}
       <div className="flex justify-between items-start gap-4 flex-wrap">
         <div className="flex items-center gap-4">
           <Image
@@ -79,9 +77,7 @@ const displayName =
           />
           <div>
             <p className="font-semibold text-lg">{displayName}</p>
-            <p className="text-sm text-gray-500">
-              buymecoffee.com/{user.id}
-            </p>
+            <p className="text-sm text-gray-500">buymecoffee.com/{user.id}</p>
           </div>
         </div>
         <Button
@@ -92,7 +88,6 @@ const displayName =
         </Button>
       </div>
 
-      {/* earnings */}
       <div className="space-y-2 relative">
         <div className="flex items-center gap-4">
           <p className="text-xl font-semibold">Earnings</p>

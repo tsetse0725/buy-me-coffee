@@ -23,21 +23,20 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "static.vecteezy.com", // ✅ Нэмсэн хэсэг
+        hostname: "static.vecteezy.com",
       },
-{
-  protocol: "https",
-  hostname: "i.pinimg.com",
-}
-,
-{
-  protocol: "https",
-  hostname: "previews.123rf.com",
-},
-{
-  protocol: "https",
-  hostname: "thumbs.dreamstime.com",
-},
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+      },
+      {
+        protocol: "https",
+        hostname: "previews.123rf.com",
+      },
+      {
+        protocol: "https",
+        hostname: "thumbs.dreamstime.com",
+      },
     ],
   },
 };

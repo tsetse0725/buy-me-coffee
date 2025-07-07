@@ -1,4 +1,3 @@
-/* src/app/_components/CoverUploader.tsx */
 "use client";
 
 import { useRef, useState, useEffect } from "react";
@@ -17,7 +16,6 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  /* ── handlers ── */
   const openPicker = () => inputRef.current?.click();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,9 +32,9 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
 
   const handleSave = async () => {
     if (!file) return;
-    /** TODO: upload → S3 / Cloudinary */
+
     console.log("Uploading:", file);
-    // mock success
+
     setOriginal(preview);
     setFile(null);
   };
@@ -47,60 +45,54 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
     };
   }, [preview]);
 
-  /* ── UI ── */
   return (
     <div className="relative w-full aspect-[3/1] bg-gray-100 overflow-hidden">
-      {/* actual image */}
       {preview && (
         <Image src={preview} alt="Cover" fill className="object-cover" />
       )}
 
-      {/* placeholder + add button (only owner) */}
       {isOwner && !file && !preview && (
-  <button
-    onClick={openPicker}
-    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+        <button
+          onClick={openPicker}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                flex items-center gap-2 px-4 py-2
                bg-black text-white rounded-md shadow-md
                hover:bg-gray-800 transition"
-  >
-    <Camera className="w-4 h-4" />
-    Add a cover image
-  </button>
+        >
+          <Camera className="w-4 h-4" />
+          Add a cover image
+        </button>
       )}
 
-      {/* edit / save-cancel overlay */}
-{isOwner && file && (
-  <div className="absolute top-4 right-4 flex gap-2 z-10">
-    <button
-      onClick={handleSave}
-      className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
-    >
-      Save changes
-    </button>
-    <button
-      onClick={handleCancel}
-      className="bg-white text-black px-4 py-2 rounded-md border hover:bg-gray-100 transition"
-    >
-      Cancel
-    </button>
-  </div>
-)}
+      {isOwner && file && (
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
+          <button
+            onClick={handleSave}
+            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
+          >
+            Save changes
+          </button>
+          <button
+            onClick={handleCancel}
+            className="bg-white text-black px-4 py-2 rounded-md border hover:bg-gray-100 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
 
-{/* owner + preview байгаа ч file байхгүй үед “Change cover” */}
-{isOwner && !file && !!original && (
-  <button
-    onClick={openPicker}
-    className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2
+      {isOwner && !file && !!original && (
+        <button
+          onClick={openPicker}
+          className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2
                text-sm text-black bg-gray-100 rounded-md shadow
                hover:bg-gray-200 transition z-10"
-  >
-    <Camera className="w-4 h-4" />
-    Change cover
-  </button>
-)}
+        >
+          <Camera className="w-4 h-4" />
+          Change cover
+        </button>
+      )}
 
-      {/* hidden file input */}
       {isOwner && (
         <input
           ref={inputRef}

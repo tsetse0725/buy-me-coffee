@@ -11,7 +11,7 @@ export default function SupportCard({ profile }: Props) {
   const [url, setURL] = useState("");
   const [message, setMessage] = useState("");
 
-  if (!profile) return null; // хамгаалалт
+  if (!profile) return null;
 
   const handleSupport = () => {
     console.table({ to: profile.username, amount: selected, url, message });

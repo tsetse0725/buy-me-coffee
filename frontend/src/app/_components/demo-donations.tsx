@@ -1,6 +1,3 @@
-// src/app/_components/demo-donations.ts
-
-/* ──────────────── types ──────────────── */
 export type Donation = {
   id: number;
   amount: number;
@@ -10,10 +7,9 @@ export type Donation = {
     username: string;
     avatarImage: string;
   };
-  createdAt: string; // ISO format
+  createdAt: string;
 };
 
-/* ──────────────── demo data ──────────────── */
 export const DEMO_DONATIONS: Donation[] = [
   {
     id: 1,

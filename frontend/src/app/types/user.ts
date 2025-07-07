@@ -1,8 +1,6 @@
-// src/app/types/user.ts
-
 export interface Profile {
   id: number;
-  userId: number;           // 🔑 User-тай FK
+  userId: number;
   username: string;
   name: string;
   about: string;

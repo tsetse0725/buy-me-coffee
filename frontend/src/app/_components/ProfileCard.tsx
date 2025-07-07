@@ -1,4 +1,3 @@
-/* src/app/_components/ProfileCard.tsx */
 "use client";
 
 import { useState } from "react";
@@ -25,7 +24,6 @@ export default function ProfileCard() {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
-      {/* ── Header + About ── */}
       <Card className="p-6 space-y-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
@@ -63,7 +61,6 @@ export default function ProfileCard() {
         </div>
       </Card>
 
-      {/* ── Social Media ── */}
       {profile.socialMediaURL && (
         <Card className="p-6 space-y-2">
           <h2 className="text-lg font-semibold">Social media URL</h2>
@@ -78,13 +75,11 @@ export default function ProfileCard() {
         </Card>
       )}
 
-      {/* ── Supporters ── */}
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Recent Supporters</h2>
         <RecentSupporters />
       </Card>
 
-      {/* ── Modal ── */}
       {open && (
         <Modal onClose={() => setOpen(false)}>
           <EditProfileForm onClose={() => setOpen(false)} />

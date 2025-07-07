@@ -1,5 +1,3 @@
-// frontend/src/types/index.ts
-
 export interface Donor {
   username: string;
   avatarImage?: string | null;

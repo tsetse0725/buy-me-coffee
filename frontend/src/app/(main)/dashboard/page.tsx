@@ -1,4 +1,3 @@
-/* src/app/(main)/dashboard/page.tsx */
 "use client";
 
 import { useState } from "react";
@@ -10,13 +9,11 @@ export default function DashboardPage() {
   const { user, profile } = useAuth();
   const [range, setRange] = useState<"last30" | "last90" | "all">("last30");
 
-  /* ╭─── Статик demo earnings — бүх сонголтод 450 ───╮ */
   const earnings = {
     last30: 450,
     last90: 450,
     all: 450,
   };
-  /* ╰───────────────────────────────────────────────╯ */
 
   if (!user) return null;
 
@@ -30,7 +27,6 @@ export default function DashboardPage() {
         setRange={setRange}
       />
 
-      {/* RecentTransactions өөрөө DEMO_DONATIONS-оо (RAW_DONATIONS) ашиглаж байгаа */}
       <RecentTransactions range={range} />
     </div>
   );

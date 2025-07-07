@@ -5,7 +5,6 @@ import Image from "next/image";
 export default function LoadingScreen() {
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-6">
-      {/* Beans */}
       <div className="relative w-24 h-24">
         {Array.from({ length: 3 }).map((_, i) => (
           <div

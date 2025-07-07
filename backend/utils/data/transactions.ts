@@ -1,4 +1,3 @@
-// src/data/transactions.ts
 export const dummyTransactions = [
   {
     id: 1,
@@ -18,5 +17,4 @@ export const dummyTransactions = [
     amount: 10,
     timeAgo: "10 hours ago",
   },
-  // … more
 ];

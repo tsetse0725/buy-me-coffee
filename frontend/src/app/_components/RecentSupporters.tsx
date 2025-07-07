@@ -1,4 +1,3 @@
-// src/app/_components/RecentSupporters.tsx
 "use client";
 
 import { useState } from "react";
@@ -48,25 +47,20 @@ const supporters: Supporter[] = [
   },
 ];
 
-const INITIAL_COUNT = 4;      // анх харуулах мөр
-
+const INITIAL_COUNT = 4;
 
 export default function RecentSupporters() {
-  /** `expanded` – бүх-мөрийг харуулах эсэх  */
   const [expanded, setExpanded] = useState(false);
 
-  /** `visible` – харагдаж буй мөрний тоо */
   const visible = expanded
     ? supporters.length
     : Math.min(INITIAL_COUNT, supporters.length);
 
-  /** товч дээр дарахад төлөвийг солих */
   const toggle = () => setExpanded((prev) => !prev);
 
-  /** дэлгэцэнд гаргах элемэнтүүд */
   const items = supporters.slice(0, visible);
 
-  const hasHidden = supporters.length > visible; // харагдаагүй мөр байгаа эсэх
+  const hasHidden = supporters.length > visible;
 
   return (
     <div className="space-y-4">
@@ -92,7 +86,6 @@ export default function RecentSupporters() {
         </div>
       ))}
 
-      {/* ——— Toggle button ——— */}
       {supporters.length > INITIAL_COUNT && (
         <div className="text-center pt-2">
           <Button variant="ghost" size="sm" onClick={toggle}>

@@ -2,10 +2,6 @@ import type { RequestHandler } from "express";
 import { prisma } from "../utils/prisma";
 import { subDays } from "date-fns";
 
-/**
- * GET /donations/earnings/:userId?days=30
- * → { earnings: 450 }
- */
 export const getEarnings: RequestHandler = async (req, res) => {
   const userId = Number(req.params.userId);
   const days = Number(req.query.days ?? 30);
@@ -27,11 +23,6 @@ export const getEarnings: RequestHandler = async (req, res) => {
   res.json({ earnings: _sum.amount ?? 0 });
 };
 
-
-/**
- * GET /donations/recent/:userId?limit=10
- * → [{ id, amount, specialMessage, donor: { username, avatarImage }, ... }]
- */
 export const getRecentDonations: RequestHandler = async (req, res) => {
   const userId = Number(req.params.userId);
   const limit = Number(req.query.limit ?? 10);
@@ -41,20 +32,19 @@ export const getRecentDonations: RequestHandler = async (req, res) => {
     return;
   }
 
-const donations = await prisma.donation.findMany({
-  where: { recipientId: userId },
-  orderBy: { createdAt: "desc" },
-  take: limit,
-  include: {
-    donor: {
-      select: {
-        username: true,
-        profile: {
-          select: { avatarImage: true },   // 👈 эндээс зураг авч байна
+  const donations = await prisma.donation.findMany({
+    where: { recipientId: userId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    include: {
+      donor: {
+        select: {
+          username: true,
+          profile: {
+            select: { avatarImage: true },
+          },
         },
       },
     },
-  },
-});
-
+  });
 };

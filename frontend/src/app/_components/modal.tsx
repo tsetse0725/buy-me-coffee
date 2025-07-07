@@ -1,4 +1,3 @@
-// src/app/_components/Modal.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -9,7 +8,6 @@ interface ModalProps {
 }
 
 export default function Modal({ onClose, children }: ModalProps) {
-  // ⎋ ESC дарахад хаах
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -21,11 +19,11 @@ export default function Modal({ onClose, children }: ModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
-      onClick={onClose} // outside click
+      onClick={onClose}
     >
       <div
         className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative"
-        onClick={(e) => e.stopPropagation()} // prevent close on inside click
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-black"

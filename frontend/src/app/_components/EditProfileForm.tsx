@@ -16,10 +16,8 @@ interface Props {
 }
 
 export default function EditProfileForm({ onClose }: Props) {
-  /* context (hook) — always unconditional */
   const { user, profile, setProfile } = useAuth();
 
-  /* local state hooks — unconditional */
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [social, setSocial] = useState("");
@@ -27,7 +25,6 @@ export default function EditProfileForm({ onClose }: Props) {
   const [avatarPrev, setAvatarPrev] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  /* populate form once profile is available */
   useEffect(() => {
     if (profile) {
       setName(profile.name);
@@ -37,17 +34,14 @@ export default function EditProfileForm({ onClose }: Props) {
     }
   }, [profile]);
 
-  /* cleanup blob URL */
   useEffect(() => {
     return () => {
       if (avatarPrev?.startsWith("blob:")) URL.revokeObjectURL(avatarPrev);
     };
   }, [avatarPrev]);
 
-  /* guard AFTER hooks */
   if (!user || !profile) return null;
 
-  /* handlers */
   const handlePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -87,10 +81,8 @@ export default function EditProfileForm({ onClose }: Props) {
     }
   };
 
-  /* UI */
   return (
     <div className="space-y-6">
-      {/* Avatar */}
       <div className="flex justify-center">
         <label className="relative cursor-pointer group">
           <Image
@@ -107,13 +99,15 @@ export default function EditProfileForm({ onClose }: Props) {
         </label>
       </div>
 
-      {/* Name */}
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
-        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+        <Input
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </div>
 
-      {/* About */}
       <div className="space-y-2">
         <Label htmlFor="about">About</Label>
         <Textarea
@@ -124,7 +118,6 @@ export default function EditProfileForm({ onClose }: Props) {
         />
       </div>
 
-      {/* Social URL */}
       <div className="space-y-2">
         <Label htmlFor="social">Social media URL</Label>
         <Input
@@ -134,7 +127,6 @@ export default function EditProfileForm({ onClose }: Props) {
         />
       </div>
 
-      {/* Buttons */}
       <div className="flex justify-end gap-2 pt-4">
         <Button variant="outline" onClick={onClose} disabled={saving}>
           Cancel

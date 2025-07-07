@@ -12,9 +12,6 @@ interface ProfileBody {
   successMessage?: string;
 }
 
-// ─────────────────────────────────────────────
-// 👤 Upload or update profile (with optional image)
-// ─────────────────────────────────────────────
 export const uploadAvatar = async (
   req: Request<{}, any, ProfileBody>,
   res: Response,
@@ -32,25 +29,25 @@ export const uploadAvatar = async (
       successMessage = "",
     } = req.body;
 
-    // Upload new image only if file exists
     let secure_url = "";
 
     if (file) {
-      const uploadRes = await new Promise<{ secure_url: string }>((resolve, reject) => {
-        const cldStream = cloudinary.uploader.upload_stream(
-          { folder: "avatars", resource_type: "image" },
-          (error, result) => {
-            if (error || !result) return reject(error);
-            resolve(result as { secure_url: string });
-          }
-        );
-        streamifier.createReadStream(file.buffer).pipe(cldStream);
-      });
+      const uploadRes = await new Promise<{ secure_url: string }>(
+        (resolve, reject) => {
+          const cldStream = cloudinary.uploader.upload_stream(
+            { folder: "avatars", resource_type: "image" },
+            (error, result) => {
+              if (error || !result) return reject(error);
+              resolve(result as { secure_url: string });
+            }
+          );
+          streamifier.createReadStream(file.buffer).pipe(cldStream);
+        }
+      );
 
       secure_url = uploadRes.secure_url;
     }
 
-    // Perform upsert with conditional avatar update
     const profile = await prisma.profile.upsert({
       where: { userId: Number(userId) },
       create: {
@@ -90,9 +87,6 @@ export const uploadAvatar = async (
   }
 };
 
-// ─────────────────────────────────────────────
-// 📄 Get profile by userId
-// ─────────────────────────────────────────────
 export const getProfile = async (
   req: Request,
   res: Response,

@@ -9,7 +9,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/app/_components/UserProvider";
 
-// ✅ Schema & Type
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Min 8 characters"),
@@ -21,7 +20,6 @@ export default function LoginPage() {
   const params = useSearchParams();
   const justSignedUp = params.get("justSignedUp") === "1";
 
-  // ✅ Hooks are now unconditionally declared
   const { user, initializing } = useAuth();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,22 +32,18 @@ export default function LoginPage() {
     mode: "onChange",
   });
 
-  // ✅ Early effect – redirect if user exists
   useEffect(() => {
     if (!initializing && user) {
       router.replace("/dashboard");
     }
   }, [user, initializing, router]);
 
-  // ✅ Early return – loading
   if (initializing) {
     return <div className="p-6 text-center">Checking session…</div>;
   }
 
-  // ✅ Early return – already logged in
   if (user) return null;
 
-  // ✅ Submit handler
   const onSubmit = async (data: FormData) => {
     setErrorMsg(null);
     setLoading(true);
@@ -88,13 +82,14 @@ export default function LoginPage() {
 
         {justSignedUp && (
           <p className="text-center text-green-600 text-sm">
-            ✅ Account created! Please log in.
+            Account created! Please log in.
           </p>
         )}
 
-        {/* Email */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="email">Email</label>
+          <label className="text-sm" htmlFor="email">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -110,9 +105,10 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* Password */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="password">Password</label>
+          <label className="text-sm" htmlFor="password">
+            Password
+          </label>
           <input
             id="password"
             type="password"
