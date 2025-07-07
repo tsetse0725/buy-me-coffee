@@ -25,7 +25,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 border-b bg-white">
+<header className="flex items-center justify-between px-6 py-3 bg-white">
       <h1 className="font-bold flex items-center gap-2 text-lg">
         <Image src="/coffee.png" alt="logo" width={24} height={24} />
         Buy&nbsp;Me&nbsp;Coffee

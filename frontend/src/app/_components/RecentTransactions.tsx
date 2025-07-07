@@ -1,0 +1,116 @@
+'use client';
+
+import { useState, useMemo } from 'react';
+import { ChevronDown } from 'lucide-react';
+import DonationCard from './DonationCard';
+
+import {
+  DEMO_DONATIONS as RAW_DONATIONS,
+
+} from '@/app/_components/demo-donations';
+
+/* -------- Props -------- */
+interface Props {
+  range: 'last30' | 'last90' | 'all';
+}
+
+const AMOUNTS = [1, 2, 5, 10] as const;
+
+export default function RecentTransactions({ range }: Props) {
+  /* checkbox filter */
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const toggle = (amt: number) =>
+    setSelected((prev) =>
+      prev.includes(amt) ? prev.filter((n) => n !== amt) : [...prev, amt],
+    );
+
+  /* filtered list (range + amount) */
+  const donations = useMemo(() => {
+    const now = Date.now();
+    const maxDays =
+      range === 'last30' ? 30 : range === 'last90' ? 90 : Infinity;
+
+    return RAW_DONATIONS.filter((d) => {
+      const diffMs = now - new Date(d.createdAt).getTime();
+      const inRange = diffMs <= maxDays * 24 * 60 * 60 * 1000;
+      const inAmount =
+        selected.length === 0 || selected.includes(d.amount);
+      return inRange && inAmount;
+    });
+  }, [range, selected]);
+
+  /* ----- UI ----- */
+  return (
+    <section className="space-y-4 relative">
+      {/* header */}
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-semibold">Recent transactions</h3>
+
+        {/* Amount dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setOpen(!open)}
+            className="border px-3 py-1 rounded flex items-center gap-1 text-sm"
+          >
+            <ChevronDown size={14} /> Amount
+          </button>
+
+          {open && (
+            <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow z-10 p-2 space-y-1">
+              {AMOUNTS.map((amt) => (
+                <label
+                  key={amt}
+                  className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-50 rounded px-2 py-1"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selected.includes(amt)}
+                    onChange={() => toggle(amt)}
+                    className="form-checkbox h-4 w-4 rounded focus:ring-0"
+                  />
+                  ${amt}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* list / empty-states */}
+      <div className="flex flex-col space-y-4">
+        {donations.length ? (
+          /* — ① Таарах картууд — */
+          donations.map((d) => <DonationCard key={d.id} donation={d} />)
+        ) : (
+          /* — ② donations.length === 0 үед — */
+          <>
+            {selected.includes(5) ? (
+              /*   ②-а  5 $ сонгогдсон үед “heart” хоосон-state  */
+              <div className="border rounded-xl px-6 py-10 text-center text-gray-600 space-y-2">
+                <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                  <ChevronDown
+                    className="h-6 w-6 text-gray-500 rotate-180"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <p className="font-medium">
+                  You don’t have any supporters yet
+                </p>
+                <p className="text-sm text-gray-500">
+                  Share your page with your audience to get started.
+                </p>
+              </div>
+            ) : (
+              /*   ②-б  өөр дүн сонгогдсоноор илэрцгүй бол энгийн мессеж  */
+              <p className="italic text-sm text-gray-500">
+                No transactions match the selected amount.
+              </p>
+            )}
+          </>
+        )}
+      </div>
+    </section>
+  );
+}

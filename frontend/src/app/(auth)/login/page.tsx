@@ -7,7 +7,9 @@ import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/app/_components/UserProvider";
 
+// ✅ Schema & Type
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Min 8 characters"),
@@ -19,15 +21,10 @@ export default function LoginPage() {
   const params = useSearchParams();
   const justSignedUp = params.get("justSignedUp") === "1";
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      router.replace("/dashboard");
-    }
-  }, [router]);
-
+  // ✅ Hooks are now unconditionally declared
+  const { user, initializing } = useAuth();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -37,6 +34,22 @@ export default function LoginPage() {
     mode: "onChange",
   });
 
+  // ✅ Early effect – redirect if user exists
+  useEffect(() => {
+    if (!initializing && user) {
+      router.replace("/dashboard");
+    }
+  }, [user, initializing, router]);
+
+  // ✅ Early return – loading
+  if (initializing) {
+    return <div className="p-6 text-center">Checking session…</div>;
+  }
+
+  // ✅ Early return – already logged in
+  if (user) return null;
+
+  // ✅ Submit handler
   const onSubmit = async (data: FormData) => {
     setErrorMsg(null);
     setLoading(true);
@@ -46,7 +59,7 @@ export default function LoginPage() {
         data
       );
       localStorage.setItem("token", res.data.token);
-      router.replace("/profile");
+      router.replace("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const apiErr = err as AxiosError<{ message?: string }>;
@@ -79,16 +92,14 @@ export default function LoginPage() {
           </p>
         )}
 
-        {/* email */}
+        {/* Email */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="email">
-            Email
-          </label>
+          <label className="text-sm" htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
-            placeholder="Enter email"
             autoComplete="email"
+            placeholder="Enter email"
             {...register("email")}
             className={`w-full rounded-md border px-4 py-2 outline-none ${
               errors.email ? "border-red-500" : "border-gray-200"
@@ -99,16 +110,14 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* password */}
+        {/* Password */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="password">
-            Password
-          </label>
+          <label className="text-sm" htmlFor="password">Password</label>
           <input
             id="password"
             type="password"
-            placeholder="Enter password"
             autoComplete="current-password"
+            placeholder="Enter password"
             {...register("password")}
             className={`w-full rounded-md border px-4 py-2 outline-none ${
               errors.password ? "border-red-500" : "border-gray-200"

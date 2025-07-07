@@ -1,38 +1,60 @@
-import { Request, Response } from "express";
+import type { RequestHandler } from "express";
 import { prisma } from "../utils/prisma";
+import { subDays } from "date-fns";
 
-export const getEarnings = async (req: Request, res: Response) => {
+/**
+ * GET /donations/earnings/:userId?days=30
+ * → { earnings: 450 }
+ */
+export const getEarnings: RequestHandler = async (req, res) => {
   const userId = Number(req.params.userId);
-  const days = Number(req.query.days ?? "30");
+  const days = Number(req.query.days ?? 30);
 
-  const fromDate = new Date();
-  fromDate.setDate(fromDate.getDate() - days);
+  if (isNaN(userId)) {
+    res.status(400).json({ message: "Invalid userId" });
+    return;
+  }
 
-  const total = await prisma.donation.aggregate({
+  const since = subDays(new Date(), days);
+  const { _sum } = await prisma.donation.aggregate({
     _sum: { amount: true },
-    where: { recipientId: userId, createdAt: { gte: fromDate } },
-  });
-
-  res.json({ earnings: total._sum.amount ?? 0 });
-};
-
-export const getRecent = async (req: Request, res: Response) => {
-  const userId = Number(req.params.userId);
-  const limit = Number(req.query.limit ?? "10");
-
-  const donations = await prisma.donation.findMany({
-    where: { recipientId: userId },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-    select: {
-      id: true,
-      amount: true,
-      specialMessage: true,
-      socialURLOrBuyMeACoffee: true,
-      donor: { select: { username: true } },
-      createdAt: true,
+    where: {
+      recipientId: userId,
+      createdAt: { gte: since },
     },
   });
 
-  res.json(donations);
+  res.json({ earnings: _sum.amount ?? 0 });
+};
+
+
+/**
+ * GET /donations/recent/:userId?limit=10
+ * → [{ id, amount, specialMessage, donor: { username, avatarImage }, ... }]
+ */
+export const getRecentDonations: RequestHandler = async (req, res) => {
+  const userId = Number(req.params.userId);
+  const limit = Number(req.query.limit ?? 10);
+
+  if (isNaN(userId)) {
+    res.status(400).json({ message: "Invalid userId" });
+    return;
+  }
+
+const donations = await prisma.donation.findMany({
+  where: { recipientId: userId },
+  orderBy: { createdAt: "desc" },
+  take: limit,
+  include: {
+    donor: {
+      select: {
+        username: true,
+        profile: {
+          select: { avatarImage: true },   // 👈 эндээс зураг авч байна
+        },
+      },
+    },
+  },
+});
+
 };

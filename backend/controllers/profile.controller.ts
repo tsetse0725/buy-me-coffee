@@ -12,6 +12,9 @@ interface ProfileBody {
   successMessage?: string;
 }
 
+// ─────────────────────────────────────────────
+// 👤 Upload or update profile (with optional image)
+// ─────────────────────────────────────────────
 export const uploadAvatar = async (
   req: Request<{}, any, ProfileBody>,
   res: Response,
@@ -19,10 +22,6 @@ export const uploadAvatar = async (
 ): Promise<void> => {
   try {
     const file = req.file;
-    if (!file) {
-      res.status(400).json({ message: "No image uploaded" });
-      return;
-    }
 
     const {
       name,
@@ -33,8 +32,11 @@ export const uploadAvatar = async (
       successMessage = "",
     } = req.body;
 
-    const { secure_url } = await new Promise<{ secure_url: string }>(
-      (resolve, reject) => {
+    // Upload new image only if file exists
+    let secure_url = "";
+
+    if (file) {
+      const uploadRes = await new Promise<{ secure_url: string }>((resolve, reject) => {
         const cldStream = cloudinary.uploader.upload_stream(
           { folder: "avatars", resource_type: "image" },
           (error, result) => {
@@ -43,9 +45,12 @@ export const uploadAvatar = async (
           }
         );
         streamifier.createReadStream(file.buffer).pipe(cldStream);
-      }
-    );
+      });
 
+      secure_url = uploadRes.secure_url;
+    }
+
+    // Perform upsert with conditional avatar update
     const profile = await prisma.profile.upsert({
       where: { userId: Number(userId) },
       create: {
@@ -60,19 +65,34 @@ export const uploadAvatar = async (
       update: {
         name,
         about,
-        avatarImage: secure_url,
         socialMediaURL,
         backgroundImage,
         successMessage,
+        ...(file && { avatarImage: secure_url }),
+      },
+      include: {
+        user: { select: { username: true } },
       },
     });
 
-    res.status(201).json(profile);
+    res.status(201).json({
+      id: profile.id,
+      username: profile.user.username,
+      name: profile.name,
+      about: profile.about,
+      socialMediaURL: profile.socialMediaURL,
+      avatarImage: profile.avatarImage,
+      backgroundImage: profile.backgroundImage,
+      successMessage: profile.successMessage,
+    });
   } catch (err) {
     next(err);
   }
 };
 
+// ─────────────────────────────────────────────
+// 📄 Get profile by userId
+// ─────────────────────────────────────────────
 export const getProfile = async (
   req: Request,
   res: Response,
@@ -83,12 +103,8 @@ export const getProfile = async (
 
     const profile = await prisma.profile.findUnique({
       where: { userId },
-      select: {
-        id: true,
-        name: true,
-        about: true,
-        socialMediaURL: true,
-        avatarImage: true,
+      include: {
+        user: { select: { username: true } },
       },
     });
 
@@ -97,7 +113,16 @@ export const getProfile = async (
       return;
     }
 
-    res.json(profile);
+    res.json({
+      id: profile.id,
+      username: profile.user.username,
+      name: profile.name,
+      about: profile.about,
+      avatarImage: profile.avatarImage,
+      socialMediaURL: profile.socialMediaURL,
+      backgroundImage: profile.backgroundImage,
+      successMessage: profile.successMessage,
+    });
   } catch (err) {
     next(err);
   }
