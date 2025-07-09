@@ -1,4 +1,3 @@
-// app/(public)/layout.tsx
 "use client";
 
 import { UserProvider } from "@/app/_components/UserProvider";

@@ -2,7 +2,6 @@ import { Router } from "express";
 
 const router = Router();
 
-/* GET /mockpay/:id  –  Simple mock invoice page */
 router.get("/:id", (req, res) => {
   const id = Number(req.params.id);
   res.send(`

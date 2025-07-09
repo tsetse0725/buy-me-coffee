@@ -9,15 +9,14 @@ export default function Navbar() {
 
   return (
     <header className="flex items-center justify-between px-6 py-3 shadow-sm">
-      {/* Logo  */}
       <Link href="/" className="text-lg font-semibold flex items-center gap-2">
-        <span role="img" aria-label="coffee">☕</span>
+        <span role="img" aria-label="coffee">
+          ☕
+        </span>
         Buy Me Coffee
       </Link>
 
-      {/* Right side */}
       {initializing ? null : user ? (
-        /* Нэвтэрсэн үед avatar + username эсвэл dropdown  */
         <Link href="/dashboard" className="flex items-center gap-2">
           <Image
             src={user.avatarImage || "/avatar-placeholder.png"}
@@ -29,7 +28,6 @@ export default function Navbar() {
           <span>{user.username}</span>
         </Link>
       ) : (
-        /* Нэвтрээгүй үед 2 товч */
         <div className="flex gap-3">
           <Link
             href="/signup"

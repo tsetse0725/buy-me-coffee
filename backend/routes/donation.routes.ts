@@ -1,4 +1,3 @@
-/* src/routes/donation.routes.ts */
 import { Router } from "express";
 import {
   createDonation,
@@ -12,19 +11,15 @@ import {
 
 const router = Router();
 
-/* 1. Create */
 router.post("/", createDonation);
 
-/* 2. Webhook + SSE BEFORE “:id” routes */
 router.post("/webhook/qpay", qpayWebhook);
-router.get("/stream/:donationId", streamDonationStatus); // ← 🟢
+router.get("/stream/:donationId", streamDonationStatus);
 
-/* 3. Stats */
 router.get("/earnings/:userId", getEarnings);
-router.get("/recent/:userId",  getRecentDonations);
+router.get("/recent/:userId", getRecentDonations);
 
-/* 4. Single donation + manual mark-paid */
-router.get("/:id",              getDonationById);
-router.patch("/:id/mark-paid",  markDonationPaid);
+router.get("/:id", getDonationById);
+router.patch("/:id/mark-paid", markDonationPaid);
 
 export default router;

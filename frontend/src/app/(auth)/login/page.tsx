@@ -49,7 +49,8 @@ export default function LoginPage() {
   }, [user, profile, initializing, router]);
 
   /* ───── UI guard ───── */
-  if (initializing) return <div className="p-6 text-center">Checking session…</div>;
+  if (initializing)
+    return <div className="p-6 text-center">Checking session…</div>;
   if (user) return null;
 
   /* ───── form submit ───── */
@@ -70,7 +71,6 @@ export default function LoginPage() {
       // ✅ Profile байгаа эсэхээр redirect хийх
       if (profile) router.replace("/dashboard");
       else router.replace("/profile");
-
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const apiErr = err as AxiosError<{ message?: string }>;
@@ -83,7 +83,6 @@ export default function LoginPage() {
     }
   };
 
-  /* ───── JSX ───── */
   return (
     <div className="relative flex h-full w-full items-center justify-center">
       <Link
@@ -106,9 +105,10 @@ export default function LoginPage() {
           </p>
         )}
 
-        {/* ── Email ── */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="email" className="text-sm">Email</label>
+          <label htmlFor="email" className="text-sm">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -124,9 +124,10 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* ── Password ── */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="password" className="text-sm">Password</label>
+          <label htmlFor="password" className="text-sm">
+            Password
+          </label>
           <input
             id="password"
             type="password"

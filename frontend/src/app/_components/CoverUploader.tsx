@@ -20,7 +20,6 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 🆕 coverImage prop өөрчлөгдвөл шинэчилнэ
   useEffect(() => {
     setPreview(coverImage || "");
     setOriginal(coverImage || "");
@@ -45,19 +44,19 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
     try {
       setLoading(true);
       const form = new FormData();
-      form.append("cover", file);                  // ⬅️ "cover" field name
-      form.append("userId", String(user.id));      // ⬅️ backend рүү userId явуулна
+      form.append("cover", file);
+      form.append("userId", String(user.id));
 
       const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
       await axios.post(`${base}/profiles/upload-cover`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      await refreshAuth();       // ⬅️ context-ийн profile дахин татна
-      setOriginal(preview);      // ⬅️ шинэ preview-г хадгалах
+      await refreshAuth();
+      setOriginal(preview);
       setFile(null);
     } catch (err) {
-      console.error("❌ Failed to upload cover image:", err);
+      console.error(" Failed to upload cover image:", err);
       alert("Cover зураг хадгалахад алдаа гарлаа.");
     } finally {
       setLoading(false);

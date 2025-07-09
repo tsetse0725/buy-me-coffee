@@ -1,4 +1,3 @@
-/* src/app/_components/UserProvider.tsx */
 "use client";
 
 import {
@@ -25,19 +24,18 @@ interface Ctx {
   initializing: boolean;
 
   refreshAuth: () => Promise<void>;
-  setUser:   (u: User | null)     => void;
-  setProfile:(p: Profile | null)  => void;
-  setBankCard:(b: BankCard | null)=> void;
+  setUser: (u: User | null) => void;
+  setProfile: (p: Profile | null) => void;
+  setBankCard: (b: BankCard | null) => void;
 }
 
 const UserContext = createContext<Ctx | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser]             = useState<User | null>(null);
-  const [profile, setProfile]       = useState<Profile | null | undefined>(undefined);
-  const [bankCard, setBankCard]     = useState<BankCard | null>(null);
-  const [initializing, setInit]     = useState(true);
-
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null | undefined>(undefined);
+  const [bankCard, setBankCard] = useState<BankCard | null>(null);
+  const [initializing, setInit] = useState(true);
 
   const loadAuth = async () => {
     const token = localStorage.getItem("token");
@@ -60,7 +58,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       ]);
 
       let prof: Profile | null = null;
-      if (pRes.status === "fulfilled" && pRes.value.ok) prof = await pRes.value.json();
+      if (pRes.status === "fulfilled" && pRes.value.ok)
+        prof = await pRes.value.json();
       setProfile(prof);
 
       if (bRes.status === "fulfilled" && bRes.value.ok) {
@@ -73,7 +72,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         id: userId,
         email: email ?? "unknown@email.com",
         username: username ?? prof?.username ?? "unknown",
-        avatarImage: prof?.avatarImage, 
+        avatarImage: prof?.avatarImage,
       });
     } catch (e) {
       console.warn("Invalid token", e);
@@ -86,10 +85,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  /* ───── анх ачаал­лах үед ───── */
-  useEffect(() => { loadAuth(); }, []);
+  useEffect(() => {
+    loadAuth();
+  }, []);
 
-  /* ───── storage event → өөр tab-аас logout/login хийхэд sync ───── */
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === "token") loadAuth();
@@ -98,13 +97,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  /* ───── context value ───── */
   const value: Ctx = {
     user,
     profile,
     bankCard,
     initializing,
-    refreshAuth: loadAuth, // ⬅️  гаднаас дуудах боломжтой
+    refreshAuth: loadAuth,
     setUser,
     setProfile,
     setBankCard,

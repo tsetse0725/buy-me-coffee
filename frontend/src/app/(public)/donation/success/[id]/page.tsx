@@ -23,7 +23,6 @@ export default function DonationSuccessPage() {
   const [donation, setDonation] = useState<DonationRes | null>(null);
   const [loading, setLoading] = useState(true);
 
-  /* fetch donation */
   useEffect(() => {
     if (!id) return;
     const fetchDonation = async () => {
@@ -46,14 +45,12 @@ export default function DonationSuccessPage() {
       <div className="text-center mt-20 text-red-500">Donation not found</div>
     );
 
-  /* map donor info */
   const donorName = donation.donor?.username ?? "Guest";
   const donorAvatar =
     donation.donor?.profile?.avatarImage ?? "/default-avatar.png";
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4">
-      {/* ✅ checkmark */}
       <div className="bg-green-500 rounded-full p-4 mb-4">
         <svg
           className="h-8 w-8 text-white"
@@ -62,13 +59,16 @@ export default function DonationSuccessPage() {
           strokeWidth="2"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5 13l4 4L19 7"
+          />
         </svg>
       </div>
 
       <h1 className="text-xl font-semibold mb-6">Donation Complete!</h1>
 
-      {/* message card */}
       <div className="bg-white shadow-md rounded-md p-4 w-full max-w-md text-left">
         <div className="flex items-center gap-3 mb-2">
           <Image
@@ -85,7 +85,6 @@ export default function DonationSuccessPage() {
         </p>
       </div>
 
-      {/* back button */}
       <button
         onClick={() => router.push("/")}
         className="mt-6 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"

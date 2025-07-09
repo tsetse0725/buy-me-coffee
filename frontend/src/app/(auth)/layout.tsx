@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { UserProvider } from "../_components/UserProvider"; // ⬅️ context import замаа шалгаарай
+import { UserProvider } from "../_components/UserProvider";
 
 export default function AuthLayout({
   children,
@@ -11,7 +11,6 @@ export default function AuthLayout({
   return (
     <UserProvider>
       <div className="w-screen h-screen flex">
-        {/* Left Section – illustration */}
         <div className="w-1/2 h-full bg-[#FFDD00] flex flex-col items-center justify-center text-center px-8 relative">
           <div className="absolute top-6 left-6 text-black font-semibold text-lg flex items-center">
             <Image
@@ -35,11 +34,11 @@ export default function AuthLayout({
             Fund your creative work
           </h2>
           <p className="text-black text-sm max-w-xs">
-            Accept support. Start a membership. Setup a shop. It’s easier than you think.
+            Accept support. Start a membership. Setup a shop. It’s easier than
+            you think.
           </p>
         </div>
 
-        {/* Right Section – login/signup form */}
         <div className="w-1/2 h-full bg-white flex items-center justify-center">
           {children}
         </div>

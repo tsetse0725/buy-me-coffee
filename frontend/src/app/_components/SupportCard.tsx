@@ -15,9 +15,8 @@ interface Props {
 
 export default function SupportCard({ profile }: Props) {
   const { user, profile: myProfile } = useAuth();
-  const router = useRouter();                          // 🆕 router
+  const router = useRouter();
 
-  /* ---------- permission flags ---------- */
   const isLoggedIn = !!user;
   const hasProfileCreated = !!myProfile;
   const isOwner = user?.id === profile.userId;
@@ -28,7 +27,6 @@ export default function SupportCard({ profile }: Props) {
   else if (!hasProfileCreated) helper = "Create your profile first";
   else if (isOwner) helper = "You can’t support yourself 🙂";
 
-  /* ---------- UI state ---------- */
   const amounts = [1, 2, 5, 10];
   const [selected, setSelected] = useState(5);
   const [url, setURL] = useState("");
@@ -40,7 +38,6 @@ export default function SupportCard({ profile }: Props) {
 
   const disabled = !canSupport || !message.trim();
 
-  /* ---------- create donation + show QR ---------- */
   const handleSupport = async () => {
     if (disabled) return;
     try {
@@ -69,7 +66,6 @@ export default function SupportCard({ profile }: Props) {
     }
   };
 
-  /* ---------- SSE: listen for PAID ---------- */
   useEffect(() => {
     if (!showQR || !qrDonationId) return;
 
@@ -80,7 +76,7 @@ export default function SupportCard({ profile }: Props) {
         const { status } = JSON.parse(e.data);
         if (status === "PAID") {
           es.close();
-          router.push(`/donation/success/${qrDonationId}`); // ⬅️ redirect
+          router.push(`/donation/success/${qrDonationId}`);
         }
       } catch (err) {
         console.error("SSE parse error", err);
@@ -95,14 +91,12 @@ export default function SupportCard({ profile }: Props) {
     return () => es.close();
   }, [showQR, qrDonationId, router]);
 
-  /* ---------- UI ---------- */
   return (
     <div className="w-full max-w-md bg-white rounded-lg shadow p-5">
       <h2 className="text-lg font-semibold mb-4">
         Buy {profile.name} a Coffee
       </h2>
 
-      {/* amount buttons */}
       <div className="flex gap-2 mb-4">
         {amounts.map((amt) => (
           <button
@@ -119,7 +113,6 @@ export default function SupportCard({ profile }: Props) {
         ))}
       </div>
 
-      {/* link + message inputs */}
       <input
         value={url}
         onChange={(e) => setURL(e.target.value)}
@@ -140,7 +133,6 @@ export default function SupportCard({ profile }: Props) {
         <p className="text-center text-sm text-gray-500 mt-2">{helper}</p>
       )}
 
-      {/* support button */}
       <button
         onClick={handleSupport}
         className={`w-full mt-4 py-2 rounded text-white transition ${
@@ -153,7 +145,6 @@ export default function SupportCard({ profile }: Props) {
         Support
       </button>
 
-      {/* QR modal */}
       {showQR && (
         <QRModal
           url={qrURL}

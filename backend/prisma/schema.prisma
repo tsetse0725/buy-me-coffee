@@ -12,8 +12,8 @@ model User {
   email             String     @unique
   password          String
   username          String     @unique
-  receivedDonations Donation[] @relation("ReceivedDonations") // ✔ зөв
-  donatedDonations  Donation[] @relation("DonatedDonations") // ✔ зөв
+  receivedDonations Donation[] @relation("ReceivedDonations") 
+  donatedDonations  Donation[] @relation("DonatedDonations") 
   profile           Profile?
   bankCard          BankCard?
   createdAt         DateTime   @default(now())
@@ -54,22 +54,22 @@ model Donation {
   socialURLOrBuyMeACoffee String?
   status                  DonationStatus @default(PENDING)
 
-  // 👉 шинэ талбарууд
-  provider                String?        // "QPAY" | "STRIPE" | …
-  paymentRef              String?        // invoice эсвэл QR URL
-  paidAt                  DateTime?      // төлөгдсөн мөч
+
+  provider                String?        
+  paymentRef              String?        
+  paidAt                  DateTime?      
   donor                   User?          @relation("DonatedDonations",  fields: [donorId],     references: [id])
   donorId                 Int?
   recipient               User           @relation("ReceivedDonations", fields: [recipientId], references: [id])
   recipientId             Int
   createdAt               DateTime       @default(now())
   updatedAt               DateTime       @updatedAt
-  @@index([recipientId])             // earnings, recent queries-д хурд нэмнэ
-  @@index([status])                  // SSE polling/websocket-д хурд нэмнэ
+  @@index([recipientId])            
+  @@index([status])                
 }
 
 enum DonationStatus {
-  PENDING // QR үүссэн, төлбөр хүлээгдэж байна
-  PAID // Төлбөр амжилттай
-  FAILED // Хүчингүй, төлбөр амжилтгүй
+  PENDING 
+  PAID 
+  FAILED 
 }

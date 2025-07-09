@@ -1,13 +1,12 @@
-/* src/controllers/donation.controller.ts */
 import { Request, Response, RequestHandler } from "express";
 import { prisma } from "../utils/prisma";
 import { DonationStatus } from "@prisma/client";
 import { subDays } from "date-fns";
 
-/* ─────────────────────────────────────────── */
-/* POST /donations – create (PENDING → auto-PAID) */
-/* ─────────────────────────────────────────── */
-export const createDonation: RequestHandler = async (req, res): Promise<void> => {
+export const createDonation: RequestHandler = async (
+  req,
+  res
+): Promise<void> => {
   const {
     amount,
     specialMessage,
@@ -17,7 +16,9 @@ export const createDonation: RequestHandler = async (req, res): Promise<void> =>
   } = req.body;
 
   if (typeof amount !== "number" || amount <= 0 || !recipientId) {
-    res.status(400).json({ message: "amount (number) and recipientId required" });
+    res
+      .status(400)
+      .json({ message: "amount (number) and recipientId required" });
     return;
   }
 
@@ -45,7 +46,7 @@ export const createDonation: RequestHandler = async (req, res): Promise<void> =>
         where: { id: donation.id },
         data: { status: DonationStatus.PAID, paidAt: new Date() },
       });
-      console.log(`🔔 Auto-paid donation #${donation.id}`);
+      console.log(` Auto-paid donation #${donation.id}`);
     } catch (err) {
       console.error("Auto-pay error:", err);
     }
@@ -55,9 +56,6 @@ export const createDonation: RequestHandler = async (req, res): Promise<void> =>
   return;
 };
 
-/* ─────────────────────────────────────────── */
-/* POST /donations/webhook/qpay – mark PAID   */
-/* ─────────────────────────────────────────── */
 export const qpayWebhook: RequestHandler = async (req, res): Promise<void> => {
   const { invoiceId, paid } = req.body;
 
@@ -76,10 +74,10 @@ export const qpayWebhook: RequestHandler = async (req, res): Promise<void> => {
   return;
 };
 
-/* ─────────────────────────────────────────── */
-/* GET /donations/stream/:donationId – SSE push */
-/* ─────────────────────────────────────────── */
-export const streamDonationStatus: RequestHandler = async (req, res): Promise<void> => {
+export const streamDonationStatus: RequestHandler = async (
+  req,
+  res
+): Promise<void> => {
   const donationId = Number(req.params.donationId);
   if (isNaN(donationId)) {
     res.status(400).json({ message: "Invalid donation ID" });
@@ -90,7 +88,8 @@ export const streamDonationStatus: RequestHandler = async (req, res): Promise<vo
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
-    "Access-Control-Allow-Origin": process.env.FRONTEND_ORIGIN || "http://localhost:3000",
+    "Access-Control-Allow-Origin":
+      process.env.FRONTEND_ORIGIN || "http://localhost:3000",
   });
 
   const interval = setInterval(async () => {
@@ -119,9 +118,6 @@ export const streamDonationStatus: RequestHandler = async (req, res): Promise<vo
   });
 };
 
-/* ─────────────────────────────────────────── */
-/* GET /donations/earnings/:userId            */
-/* ─────────────────────────────────────────── */
 export const getEarnings: RequestHandler = async (req, res): Promise<void> => {
   const userId = Number(req.params.userId);
   if (isNaN(userId)) {
@@ -148,10 +144,10 @@ export const getEarnings: RequestHandler = async (req, res): Promise<void> => {
   return;
 };
 
-/* ─────────────────────────────────────────── */
-/* GET /donations/recent/:userId              */
-/* ─────────────────────────────────────────── */
-export const getRecentDonations: RequestHandler = async (req, res): Promise<void> => {
+export const getRecentDonations: RequestHandler = async (
+  req,
+  res
+): Promise<void> => {
   const userId = Number(req.params.userId);
   if (isNaN(userId)) {
     res.status(400).json({ message: "Invalid userId" });
@@ -177,10 +173,10 @@ export const getRecentDonations: RequestHandler = async (req, res): Promise<void
   return;
 };
 
-/* ─────────────────────────────────────────── */
-/* GET /donations/:id                         */
-/* ─────────────────────────────────────────── */
-export const getDonationById: RequestHandler = async (req, res): Promise<void> => {
+export const getDonationById: RequestHandler = async (
+  req,
+  res
+): Promise<void> => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
     res.status(400).json({ message: "Invalid id" });
@@ -208,10 +204,10 @@ export const getDonationById: RequestHandler = async (req, res): Promise<void> =
   return;
 };
 
-/* ─────────────────────────────────────────── */
-/* PATCH /donations/:id/mark-paid             */
-/* ─────────────────────────────────────────── */
-export const markDonationPaid: RequestHandler = async (req, res): Promise<void> => {
+export const markDonationPaid: RequestHandler = async (
+  req,
+  res
+): Promise<void> => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
     res.status(400).json({ message: "Invalid id" });

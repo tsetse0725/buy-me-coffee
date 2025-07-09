@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Modal from "@/app/_components/modal";
 import EditProfileForm from "@/app/_components/EditProfileForm";
 import RecentSupporters from "@/app/_components/RecentSupporters";
-import type { Profile } from "@/app/types/user"; // ⬅️ Profile type
+import type { Profile } from "@/app/types/user";
 
 type Props = {
   profile: Profile;
@@ -21,7 +21,6 @@ export default function ProfileCard({ profile, isOwner }: Props) {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
-      {/* ──────────────── TOP CARD ──────────────── */}
       <Card className="p-6 space-y-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
@@ -59,7 +58,6 @@ export default function ProfileCard({ profile, isOwner }: Props) {
         </div>
       </Card>
 
-      {/* ──────────────── SOCIAL LINK ──────────────── */}
       {profile.socialMediaURL && (
         <Card className="p-6 space-y-2">
           <h2 className="text-lg font-semibold">Social media URL</h2>
@@ -74,13 +72,11 @@ export default function ProfileCard({ profile, isOwner }: Props) {
         </Card>
       )}
 
-      {/* ──────────────── RECENT SUPPORTERS ──────────────── */}
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Recent Supporters</h2>
         <RecentSupporters />
       </Card>
 
-      {/* ──────────────── MODAL ──────────────── */}
       {isOwner && open && (
         <Modal onClose={() => setOpen(false)}>
           <EditProfileForm onClose={() => setOpen(false)} />
