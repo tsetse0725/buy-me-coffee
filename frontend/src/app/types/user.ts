@@ -15,6 +15,7 @@ export interface User {
   email: string;
   username: string;
   profile?: Profile | null;
+   avatarImage?: string;
 }
 
 export interface BankCard {

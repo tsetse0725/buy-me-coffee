@@ -1,3 +1,4 @@
+/* src/app/(main)/login/page.tsx */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,6 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/app/_components/UserProvider";
 
+/* ───── validation schema ───── */
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Min 8 characters"),
@@ -20,9 +22,12 @@ export default function LoginPage() {
   const params = useSearchParams();
   const justSignedUp = params.get("justSignedUp") === "1";
 
-  const { user, initializing } = useAuth();
+  /* ───── context ───── */
+  const { user, profile, initializing, refreshAuth } = useAuth(); // refreshAuth нэмэгдсэн
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  /* ───── react-hook-form ───── */
   const {
     register,
     handleSubmit,
@@ -32,38 +37,53 @@ export default function LoginPage() {
     mode: "onChange",
   });
 
+  /* ───── redirect logic ───── */
   useEffect(() => {
     if (!initializing && user) {
-      router.replace("/dashboard");
+      if (profile) {
+        router.replace("/dashboard");
+      } else {
+        router.replace("/profile");
+      }
     }
-  }, [user, initializing, router]);
+  }, [user, profile, initializing, router]);
 
-  if (initializing) {
-    return <div className="p-6 text-center">Checking session…</div>;
-  }
-
+  /* ───── UI guard ───── */
+  if (initializing) return <div className="p-6 text-center">Checking session…</div>;
   if (user) return null;
 
+  /* ───── form submit ───── */
   const onSubmit = async (data: FormData) => {
-    setErrorMsg(null);
-    setLoading(true);
     try {
+      setErrorMsg(null);
+      setLoading(true);
+
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/login`,
         data
       );
       localStorage.setItem("token", res.data.token);
-      router.replace("/dashboard");
+
+      // ⟳ Profile болон user context-оор шинэчлэх
+      await refreshAuth();
+
+      // ✅ Profile байгаа эсэхээр redirect хийх
+      if (profile) router.replace("/dashboard");
+      else router.replace("/profile");
+
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const apiErr = err as AxiosError<{ message?: string }>;
         setErrorMsg(apiErr.response?.data?.message ?? "Unable to log in.");
-      } else setErrorMsg("Unexpected error occurred.");
+      } else {
+        setErrorMsg("Unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  /* ───── JSX ───── */
   return (
     <div className="relative flex h-full w-full items-center justify-center">
       <Link
@@ -82,14 +102,13 @@ export default function LoginPage() {
 
         {justSignedUp && (
           <p className="text-center text-green-600 text-sm">
-            Account created! Please log in.
+            ✅ Account created! Please log in.
           </p>
         )}
 
+        {/* ── Email ── */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="email">
-            Email
-          </label>
+          <label htmlFor="email" className="text-sm">Email</label>
           <input
             id="email"
             type="email"
@@ -105,10 +124,9 @@ export default function LoginPage() {
           )}
         </div>
 
+        {/* ── Password ── */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm" htmlFor="password">
-            Password
-          </label>
+          <label htmlFor="password" className="text-sm">Password</label>
           <input
             id="password"
             type="password"

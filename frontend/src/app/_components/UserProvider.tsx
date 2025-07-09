@@ -1,3 +1,4 @@
+/* src/app/_components/UserProvider.tsx */
 "use client";
 
 import {
@@ -22,26 +23,29 @@ interface Ctx {
   profile: Profile | null | undefined;
   bankCard: BankCard | null;
   initializing: boolean;
-  setUser: (u: User | null) => void;
-  setProfile: (p: Profile | null) => void;
-  setBankCard: (b: BankCard | null) => void;
+
+  refreshAuth: () => Promise<void>;
+  setUser:   (u: User | null)     => void;
+  setProfile:(p: Profile | null)  => void;
+  setBankCard:(b: BankCard | null)=> void;
 }
 
 const UserContext = createContext<Ctx | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null | undefined>(undefined);
-  const [bankCard, setBankCard] = useState<BankCard | null>(null);
-  const [initializing, setInitializing] = useState(true);
+  const [user, setUser]             = useState<User | null>(null);
+  const [profile, setProfile]       = useState<Profile | null | undefined>(undefined);
+  const [bankCard, setBankCard]     = useState<BankCard | null>(null);
+  const [initializing, setInit]     = useState(true);
 
-  useEffect(() => {
+
+  const loadAuth = async () => {
     const token = localStorage.getItem("token");
-    console.log("🔑 token =", token);
-
     if (!token) {
-      console.log(" No token, not logged in");
-      setInitializing(false);
+      setUser(null);
+      setProfile(null);
+      setBankCard(null);
+      setInit(false);
       return;
     }
 
@@ -50,64 +54,63 @@ export function UserProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("uid", String(userId));
 
       const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-
-      Promise.allSettled([
+      const [pRes, bRes] = await Promise.allSettled([
         fetch(`${base}/profiles/${userId}`),
         fetch(`${base}/bankcards/${userId}`),
-      ]).then(async (results) => {
-        const [pRes, bRes] = results;
+      ]);
 
-        let profileUsername: string | undefined;
+      let prof: Profile | null = null;
+      if (pRes.status === "fulfilled" && pRes.value.ok) prof = await pRes.value.json();
+      setProfile(prof);
 
-        if (pRes.status === "fulfilled" && pRes.value.ok) {
-          const prof: Profile = await pRes.value.json();
-          setProfile(prof);
-          profileUsername = prof.username;
-          console.log(" setProfile →", prof);
-        } else {
-          setProfile(null);
-          console.log(" setProfile → null");
-        }
+      if (bRes.status === "fulfilled" && bRes.value.ok) {
+        setBankCard(await bRes.value.json());
+      } else {
+        setBankCard(null);
+      }
 
-        if (bRes.status === "fulfilled" && bRes.value.ok) {
-          const card = await bRes.value.json();
-          setBankCard(card);
-          console.log("💳 setBankCard →", card);
-        }
-
-        const finalUser: User = {
-          id: userId,
-          email: email ?? "unknown@email.com",
-          username: username ?? profileUsername ?? "unknown",
-        };
-        setUser(finalUser);
-        console.log("👤 setUser →", finalUser);
-
-        setInitializing(false);
-        console.log(" initializing → false");
+      setUser({
+        id: userId,
+        email: email ?? "unknown@email.com",
+        username: username ?? prof?.username ?? "unknown",
+        avatarImage: prof?.avatarImage, 
       });
-    } catch (err) {
-      console.warn(" Invalid token", err);
+    } catch (e) {
+      console.warn("Invalid token", e);
       localStorage.removeItem("token");
-      setInitializing(false);
+      setUser(null);
+      setProfile(null);
+      setBankCard(null);
+    } finally {
+      setInit(false);
     }
+  };
+
+  /* ───── анх ачаал­лах үед ───── */
+  useEffect(() => { loadAuth(); }, []);
+
+  /* ───── storage event → өөр tab-аас logout/login хийхэд sync ───── */
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "token") loadAuth();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  return (
-    <UserContext.Provider
-      value={{
-        user,
-        profile,
-        bankCard,
-        initializing,
-        setUser,
-        setProfile,
-        setBankCard,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  /* ───── context value ───── */
+  const value: Ctx = {
+    user,
+    profile,
+    bankCard,
+    initializing,
+    refreshAuth: loadAuth, // ⬅️  гаднаас дуудах боломжтой
+    setUser,
+    setProfile,
+    setBankCard,
+  };
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
 export function useAuth() {

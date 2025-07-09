@@ -8,30 +8,30 @@ datasource db {
 }
 
 model User {
-  id                 Int        @id @default(autoincrement())
-  email              String     @unique
-  password           String
-  username           String     @unique
-  receivedDonations  Donation[] @relation("ReceivedDonations")
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
-  profile            Profile?
-  bankCard           BankCard?
-  donatedDonations   Donation[] @relation("DonatedDonations")
+  id                Int        @id @default(autoincrement())
+  email             String     @unique
+  password          String
+  username          String     @unique
+  receivedDonations Donation[] @relation("ReceivedDonations") // ✔ зөв
+  donatedDonations  Donation[] @relation("DonatedDonations") // ✔ зөв
+  profile           Profile?
+  bankCard          BankCard?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 model Profile {
-  id               Int      @id @default(autoincrement())
-  name             String
-  about            String
-  avatarImage      String
-  socialMediaURL   String
-  backgroundImage  String
-  successMessage   String
-  user             User     @relation(fields: [userId], references: [id])
-  userId           Int      @unique
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  name            String
+  about           String
+  avatarImage     String
+  socialMediaURL  String
+  backgroundImage String
+  successMessage  String
+  user            User     @relation(fields: [userId], references: [id])
+  userId          Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model BankCard {
@@ -48,14 +48,28 @@ model BankCard {
 }
 
 model Donation {
-  id                      Int      @id @default(autoincrement())
+  id                      Int            @id @default(autoincrement())
   amount                  Int
-  specialMessage          String
-  socialURLOrBuyMeACoffee String
-  donor                   User     @relation("DonatedDonations", fields: [donorId], references: [id])
-  donorId                 Int
-  recipient               User     @relation("ReceivedDonations", fields: [recipientId], references: [id])
+  specialMessage          String?
+  socialURLOrBuyMeACoffee String?
+  status                  DonationStatus @default(PENDING)
+
+  // 👉 шинэ талбарууд
+  provider                String?        // "QPAY" | "STRIPE" | …
+  paymentRef              String?        // invoice эсвэл QR URL
+  paidAt                  DateTime?      // төлөгдсөн мөч
+  donor                   User?          @relation("DonatedDonations",  fields: [donorId],     references: [id])
+  donorId                 Int?
+  recipient               User           @relation("ReceivedDonations", fields: [recipientId], references: [id])
   recipientId             Int
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  @@index([recipientId])             // earnings, recent queries-д хурд нэмнэ
+  @@index([status])                  // SSE polling/websocket-д хурд нэмнэ
+}
+
+enum DonationStatus {
+  PENDING // QR үүссэн, төлбөр хүлээгдэж байна
+  PAID // Төлбөр амжилттай
+  FAILED // Хүчингүй, төлбөр амжилтгүй
 }
