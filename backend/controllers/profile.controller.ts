@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { cloudinary } from "../utils/cloudinary";
 import { prisma } from "../utils/prisma";
 import streamifier from "streamifier";
-import type { Express } from "express";
 
-/* ───── Helper ───── */
+
+
 async function uploadToCloudinary(
   file: Express.Multer.File,
   folder: string
@@ -21,7 +21,7 @@ async function uploadToCloudinary(
   });
 }
 
-/* ───── Profile Upload (avatar + cover) ───── */
+
 export const uploadAvatar = async (
   req: Request,
   res: Response,
@@ -92,7 +92,7 @@ export const uploadAvatar = async (
   }
 };
 
-/* ───── Upload Cover only ───── */
+
 export const uploadCover = async (
   req: Request,
   res: Response,
@@ -128,7 +128,7 @@ export const uploadCover = async (
   }
 };
 
-/* ───── Get Profile by ID ───── */
+
 export const getProfile = async (
   req: Request,
   res: Response,
@@ -162,7 +162,7 @@ export const getProfile = async (
   }
 };
 
-/* ───── Get All Profiles ───── */
+
 export const getAllProfiles = async (
   req: Request,
   res: Response,
@@ -198,7 +198,7 @@ export const getAllProfiles = async (
   }
 };
 
-/* ───── Get Profile by Username ───── */
+
 export const getProfileByUsername = async (
   req: Request,
   res: Response,
@@ -229,7 +229,7 @@ export const getProfileByUsername = async (
   }
 };
 
-/* ───── PATCH /profiles/:userId ───── */
+
 export const updateProfile = async (
   req: Request,
   res: Response,
@@ -237,8 +237,8 @@ export const updateProfile = async (
 ): Promise<void> => {
   try {
     const uid = Number(req.params.userId);
-    console.log("🟡 userId:", uid);
-    console.log("🟢 Request Body:", req.body);
+    console.log(" userId:", uid);
+    console.log(" Request Body:", req.body);
 
     if (isNaN(uid)) {
       res.status(400).json({ message: "Invalid userId" });
@@ -267,11 +267,11 @@ export const updateProfile = async (
     });
 
     res.status(200).json({
-      message: "✅ Profile updated successfully",
+      message: " Profile updated successfully",
       updatedProfile: updated,
     });
   } catch (err) {
-    console.error("❌ updateProfile error:", err);
+    console.error(" updateProfile error:", err);
     next(err);
   }
 };

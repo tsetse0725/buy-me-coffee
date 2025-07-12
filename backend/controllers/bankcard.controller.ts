@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../utils/prisma";
 
-/* ────────────── Helper functions ────────────── */
+
 function isValidUserId(id: string | number): number | null {
   const num = Number(id);
   return isNaN(num) ? null : num;
@@ -13,7 +13,7 @@ function maskCardNumber(cardNumber: string): string {
     : cardNumber;
 }
 
-/* ────────────── POST /bankcards – upsert card ────────────── */
+
 export const createOrUpdateBankCard = async (
   req: Request,
   res: Response,
@@ -95,7 +95,6 @@ export const createOrUpdateBankCard = async (
   }
 };
 
-/* ────────────── GET /bankcards/:userId ────────────── */
 export const getBankCard = async (
   req: Request,
   res: Response,
@@ -136,7 +135,7 @@ export const getBankCard = async (
   }
 };
 
-/* ────────────── DELETE /bankcards/:userId ────────────── */
+
 export const deleteBankCard = async (
   req: Request,
   res: Response,

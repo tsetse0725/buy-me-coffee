@@ -19,9 +19,9 @@ export const updatePasswordController: RequestHandler = async (req, res, next) =
       data: { password: hashedPassword },
     });
 
-    res.status(200).json({ message: "✅ Password updated" });
+    res.status(200).json({ message: " Password updated" });
   } catch (err) {
-    console.error("❌ Error updating password:", err);
-    next(err); // Express-ийн алдаа дамжуулалт
+    console.error(" Error updating password:", err);
+    next(err); 
   }
 };

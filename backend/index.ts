@@ -9,7 +9,7 @@ import profileRoutes from "./routes/profile.routes";
 import bankcardRoutes from "./routes/bankcard.routes";
 import donationRoutes from "./routes/donation.routes";
 import mockpayRoutes from "./routes/mockpay.routes";
-import userRoutes from "./routes/user.routes"; // ✅ нэмсэн
+import userRoutes from "./routes/user.routes"; 
 
 const app = express();
 

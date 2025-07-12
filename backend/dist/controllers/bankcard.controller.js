@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBankCard = exports.getBankCard = exports.createOrUpdateBankCard = void 0;
 const prisma_1 = require("../utils/prisma");
-/* ────────────── Helper functions ────────────── */
 function isValidUserId(id) {
     const num = Number(id);
     return isNaN(num) ? null : num;
@@ -12,7 +11,6 @@ function maskCardNumber(cardNumber) {
         ? cardNumber.replace(/\d{12}(\d{4})/, "****-****-****-$1")
         : cardNumber;
 }
-/* ────────────── POST /bankcards – upsert card ────────────── */
 const createOrUpdateBankCard = async (req, res, next) => {
     try {
         const { userId, country, firstName, lastName, cardNumber, expiryMonth, expiryYear, } = req.body;
@@ -71,7 +69,6 @@ const createOrUpdateBankCard = async (req, res, next) => {
     }
 };
 exports.createOrUpdateBankCard = createOrUpdateBankCard;
-/* ────────────── GET /bankcards/:userId ────────────── */
 const getBankCard = async (req, res, next) => {
     try {
         const uid = isValidUserId(req.params.userId);
@@ -106,7 +103,6 @@ const getBankCard = async (req, res, next) => {
     }
 };
 exports.getBankCard = getBankCard;
-/* ────────────── DELETE /bankcards/:userId ────────────── */
 const deleteBankCard = async (req, res, next) => {
     try {
         const uid = isValidUserId(req.params.userId);
