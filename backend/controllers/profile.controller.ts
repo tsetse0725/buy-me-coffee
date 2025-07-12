@@ -3,8 +3,6 @@ import { cloudinary } from "../utils/cloudinary";
 import { prisma } from "../utils/prisma";
 import streamifier from "streamifier";
 
-
-
 async function uploadToCloudinary(
   file: Express.Multer.File,
   folder: string
@@ -20,7 +18,6 @@ async function uploadToCloudinary(
     streamifier.createReadStream(file.buffer).pipe(stream);
   });
 }
-
 
 export const uploadAvatar = async (
   req: Request,
@@ -61,7 +58,7 @@ export const uploadAvatar = async (
         about,
         socialMediaURL,
         avatarImage: avatar_url,
-        backgroundImage: cover_url,
+        coverImage: cover_url,
         successMessage,
         userId: uid,
       },
@@ -71,7 +68,7 @@ export const uploadAvatar = async (
         ...(socialMediaURL.trim() && { socialMediaURL }),
         ...(successMessage.trim() && { successMessage }),
         ...(avatar_url && { avatarImage: avatar_url }),
-        ...(cover_url && { backgroundImage: cover_url }),
+        ...(cover_url && { coverImage: cover_url }),
       },
       include: { user: { select: { username: true } } },
     });
@@ -84,14 +81,13 @@ export const uploadAvatar = async (
       about: profile.about,
       avatarImage: profile.avatarImage,
       socialMediaURL: profile.socialMediaURL,
-      coverImage: profile.backgroundImage,
+      coverImage: profile.coverImage,
       successMessage: profile.successMessage,
     });
   } catch (err) {
     next(err);
   }
 };
-
 
 export const uploadCover = async (
   req: Request,
@@ -112,14 +108,14 @@ export const uploadCover = async (
       where: { userId: uid },
       create: {
         userId: uid,
-        backgroundImage: secure_url,
+        coverImage: secure_url,
         name: "",
         about: "",
         socialMediaURL: "",
         avatarImage: "",
         successMessage: "",
       },
-      update: { backgroundImage: secure_url },
+      update: { coverImage: secure_url },
     });
 
     res.status(200).json({ url: secure_url });
@@ -127,7 +123,6 @@ export const uploadCover = async (
     next(err);
   }
 };
-
 
 export const getProfile = async (
   req: Request,
@@ -154,14 +149,13 @@ export const getProfile = async (
       about: profile.about,
       avatarImage: profile.avatarImage,
       socialMediaURL: profile.socialMediaURL,
-      coverImage: profile.backgroundImage,
+      coverImage: profile.coverImage,
       successMessage: profile.successMessage,
     });
   } catch (err) {
     next(err);
   }
 };
-
 
 export const getAllProfiles = async (
   req: Request,
@@ -188,7 +182,7 @@ export const getAllProfiles = async (
       about: profile.about,
       avatarImage: profile.avatarImage,
       socialMediaURL: profile.socialMediaURL,
-      coverImage: profile.backgroundImage,
+      coverImage: profile.coverImage,
       successMessage: profile.successMessage,
     }));
 
@@ -197,7 +191,6 @@ export const getAllProfiles = async (
     next(err);
   }
 };
-
 
 export const getProfileByUsername = async (
   req: Request,
@@ -221,14 +214,13 @@ export const getProfileByUsername = async (
       about: profile.about,
       avatarImage: profile.avatarImage,
       socialMediaURL: profile.socialMediaURL,
-      coverImage: profile.backgroundImage,
+      coverImage: profile.coverImage,
       successMessage: profile.successMessage,
     });
   } catch (err) {
     next(err);
   }
 };
-
 
 export const updateProfile = async (
   req: Request,
@@ -275,5 +267,3 @@ export const updateProfile = async (
     next(err);
   }
 };
-
-

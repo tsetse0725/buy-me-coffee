@@ -39,7 +39,7 @@ const uploadAvatar = async (req, res, next) => {
                 about,
                 socialMediaURL,
                 avatarImage: avatar_url,
-                backgroundImage: cover_url,
+                coverImage: cover_url,
                 successMessage,
                 userId: uid,
             },
@@ -49,7 +49,7 @@ const uploadAvatar = async (req, res, next) => {
                 ...(socialMediaURL.trim() && { socialMediaURL }),
                 ...(successMessage.trim() && { successMessage }),
                 ...(avatar_url && { avatarImage: avatar_url }),
-                ...(cover_url && { backgroundImage: cover_url }),
+                ...(cover_url && { coverImage: cover_url }),
             },
             include: { user: { select: { username: true } } },
         });
@@ -61,7 +61,7 @@ const uploadAvatar = async (req, res, next) => {
             about: profile.about,
             avatarImage: profile.avatarImage,
             socialMediaURL: profile.socialMediaURL,
-            coverImage: profile.backgroundImage,
+            coverImage: profile.coverImage,
             successMessage: profile.successMessage,
         });
     }
@@ -82,14 +82,14 @@ const uploadCover = async (req, res, next) => {
             where: { userId: uid },
             create: {
                 userId: uid,
-                backgroundImage: secure_url,
+                coverImage: secure_url,
                 name: "",
                 about: "",
                 socialMediaURL: "",
                 avatarImage: "",
                 successMessage: "",
             },
-            update: { backgroundImage: secure_url },
+            update: { coverImage: secure_url },
         });
         res.status(200).json({ url: secure_url });
     }
@@ -117,7 +117,7 @@ const getProfile = async (req, res, next) => {
             about: profile.about,
             avatarImage: profile.avatarImage,
             socialMediaURL: profile.socialMediaURL,
-            coverImage: profile.backgroundImage,
+            coverImage: profile.coverImage,
             successMessage: profile.successMessage,
         });
     }
@@ -146,7 +146,7 @@ const getAllProfiles = async (req, res, next) => {
             about: profile.about,
             avatarImage: profile.avatarImage,
             socialMediaURL: profile.socialMediaURL,
-            coverImage: profile.backgroundImage,
+            coverImage: profile.coverImage,
             successMessage: profile.successMessage,
         }));
         res.json(result);
@@ -173,7 +173,7 @@ const getProfileByUsername = async (req, res, next) => {
             about: profile.about,
             avatarImage: profile.avatarImage,
             socialMediaURL: profile.socialMediaURL,
-            coverImage: profile.backgroundImage,
+            coverImage: profile.coverImage,
             successMessage: profile.successMessage,
         });
     }
