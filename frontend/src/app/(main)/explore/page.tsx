@@ -14,8 +14,9 @@ export default function ExplorePage() {
       try {
         const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const res = await fetch(`${base}/profiles`);
-        const data = await res.json();
-        setProfiles(data); // ← `data.profiles` биш!
+const data = await res.json();
+console.log("🧪 Fetched profiles response:", data);
+setProfiles(data);
       } catch (err) {
         console.error("❌ Failed to fetch profiles:", err);
       }
