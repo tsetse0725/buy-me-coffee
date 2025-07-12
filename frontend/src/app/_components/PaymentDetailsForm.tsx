@@ -41,6 +41,7 @@ export default function PaymentDetailsForm() {
     },
   });
 
+  // 🔄 Load card info
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.id) return;
@@ -55,20 +56,20 @@ export default function PaymentDetailsForm() {
           firstName: string;
           lastName: string;
           cardNumber: string;
-          expiryDate: string;
+          expiryMonth: string;
+          expiryYear: string;
           cvc?: string;
           country: string;
         } = await res.json();
 
-        const date = new Date(card.expiryDate);
         setValue("firstName", card.firstName);
         setValue("lastName", card.lastName);
         setValue("cardNumber", card.cardNumber.replace(/-/g, ""));
         setValue("country", card.country);
-        setValue("expiryMonth", (date.getMonth() + 1).toString());
-        setValue("expiryYear", date.getFullYear().toString());
+        setValue("expiryMonth", card.expiryMonth);
+        setValue("expiryYear", card.expiryYear);
       } catch {
-        console.error("Failed to fetch card data");
+        console.error("❌ Failed to fetch card data");
       }
     };
 
@@ -87,10 +88,10 @@ export default function PaymentDetailsForm() {
       });
 
       if (!res.ok) throw new Error("Failed to save");
-      alert("✅ Bank card saved!");
+      alert(" Bank card saved!");
     } catch (err) {
-      console.error("❌ Save error:", err);
-      alert("⚠️ Failed to save card");
+      console.error(" Save error:", err);
+      alert(" Failed to save card");
     } finally {
       setLoading(false);
     }
@@ -103,7 +104,7 @@ export default function PaymentDetailsForm() {
     >
       <h2 className="text-lg font-semibold">Payment details</h2>
 
-      {/* 🌍 Country */}
+
       <div>
         <label className="block text-sm font-medium mb-1">Select country</label>
         <select
@@ -115,9 +116,12 @@ export default function PaymentDetailsForm() {
           <option>Mongolia</option>
           <option>Japan</option>
         </select>
+        {errors.country && (
+          <p className="text-sm text-red-500 mt-1">{errors.country.message}</p>
+        )}
       </div>
 
-      {/* 👤 Name */}
+
       <div className="flex gap-4">
         <div className="w-1/2">
           <label className="block text-sm font-medium mb-1">First name</label>
@@ -125,6 +129,9 @@ export default function PaymentDetailsForm() {
             {...register("firstName")}
             className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
           />
+          {errors.firstName && (
+            <p className="text-sm text-red-500 mt-1">{errors.firstName.message}</p>
+          )}
         </div>
         <div className="w-1/2">
           <label className="block text-sm font-medium mb-1">Last name</label>
@@ -132,10 +139,13 @@ export default function PaymentDetailsForm() {
             {...register("lastName")}
             className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
           />
+          {errors.lastName && (
+            <p className="text-sm text-red-500 mt-1">{errors.lastName.message}</p>
+          )}
         </div>
       </div>
 
-      {/* 💳 Card Number */}
+
       <Controller
         name="cardNumber"
         control={control}
@@ -161,7 +171,7 @@ export default function PaymentDetailsForm() {
         )}
       />
 
-      {/* 📅 Expiry & CVC */}
+
       <div className="flex gap-4">
         <div className="w-1/3">
           <label className="block text-sm font-medium mb-1">Expires</label>
@@ -170,7 +180,7 @@ export default function PaymentDetailsForm() {
             className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
           >
             {Array.from({ length: 12 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
+              <option key={i + 1} value={String(i + 1).padStart(2, "0")}>
                 {i + 1}
               </option>
             ))}
@@ -185,7 +195,7 @@ export default function PaymentDetailsForm() {
             {Array.from({ length: 10 }, (_, i) => {
               const year = new Date().getFullYear() + i;
               return (
-                <option key={year} value={year}>
+                <option key={year} value={String(year)}>
                   {year}
                 </option>
               );
@@ -200,14 +210,12 @@ export default function PaymentDetailsForm() {
             className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
           />
           {errors.cvc && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.cvc.message}
-            </p>
+            <p className="text-sm text-red-500 mt-1">{errors.cvc.message}</p>
           )}
         </div>
       </div>
 
-      {/* ✅ Submit */}
+
       <div className="text-center">
         <button
           type="submit"

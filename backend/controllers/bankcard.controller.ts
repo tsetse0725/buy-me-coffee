@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../utils/prisma";
 
-
 function isValidUserId(id: string | number): number | null {
   const num = Number(id);
-  return isNaN(num) ? null : num;
+  return isNaN(num) || num <= 0 ? null : num;
 }
 
 function maskCardNumber(cardNumber: string): string {
@@ -13,7 +12,7 @@ function maskCardNumber(cardNumber: string): string {
     : cardNumber;
 }
 
-
+/* ───────────── POST /bankcards ───────────── */
 export const createOrUpdateBankCard = async (
   req: Request,
   res: Response,
@@ -95,6 +94,7 @@ export const createOrUpdateBankCard = async (
   }
 };
 
+/* ───────────── GET /bankcards/:userId ───────────── */
 export const getBankCard = async (
   req: Request,
   res: Response,
@@ -126,16 +126,27 @@ export const getBankCard = async (
       return;
     }
 
+    const date = card.expiryDate ? new Date(card.expiryDate) : null;
+    const expiryMonth = date ? (date.getMonth() + 1).toString() : "";
+    const expiryYear = date ? date.getFullYear().toString() : "";
+
     res.json({
-      ...card,
+      id: card.id,
+      country: card.country,
+      firstName: card.firstName,
+      lastName: card.lastName,
       cardNumber: maskCardNumber(card.cardNumber),
+      expiryMonth,
+      expiryYear,
+      createdAt: card.createdAt,
+      updatedAt: card.updatedAt,
     });
   } catch (err) {
     next(err);
   }
 };
 
-
+/* ───────────── DELETE /bankcards/:userId ───────────── */
 export const deleteBankCard = async (
   req: Request,
   res: Response,
