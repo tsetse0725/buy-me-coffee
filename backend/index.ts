@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN || "http://localhost:3000",
+    origin: [process.env.FRONTEND_ORIGIN || "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -47,5 +47,5 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 
 const PORT = Number(process.env.PORT) || 8000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`✅  Server is running on port ${PORT}`);
 });
