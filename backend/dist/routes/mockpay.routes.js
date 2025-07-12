@@ -15,7 +15,7 @@ router.get("/:id", (req, res) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ invoiceId: ${id}, paid: true })
         })
-        .then(() => alert('✅ Marked PAID — you can close this tab.'))
+        .then(() => alert(' Marked PAID — you can close this tab.'))
         .catch(() => alert('Error calling webhook'));
       }
     </script>

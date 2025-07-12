@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "start": "nodemon",
-    "build": "tsc",
-    "prisma:generate": "yarn prisma generate",
-    "prisma:migrate": "yarn prisma migrate dev --name init"
-  },
+"scripts": {
+  "dev": "nodemon",                        
+  "start": "node dist/index.js",          
+  "build": "tsc",
+  "prisma:generate": "prisma generate",
+  "prisma:migrate": "prisma migrate dev --name init"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

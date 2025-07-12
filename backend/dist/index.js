@@ -12,7 +12,7 @@ const profile_routes_1 = __importDefault(require("./routes/profile.routes"));
 const bankcard_routes_1 = __importDefault(require("./routes/bankcard.routes"));
 const donation_routes_1 = __importDefault(require("./routes/donation.routes"));
 const mockpay_routes_1 = __importDefault(require("./routes/mockpay.routes"));
-const user_routes_1 = __importDefault(require("./routes/user.routes")); // ✅ нэмсэн
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
     origin: process.env.FRONTEND_ORIGIN || "http://localhost:3000",

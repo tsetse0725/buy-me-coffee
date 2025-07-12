@@ -11,7 +11,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+
+    // ⬇️ ЭНЭ ХОЁРЫГ НЭМ
+    "types": ["node", "express", "bcryptjs", "dotenv", "jsonwebtoken", "multer", "cors"]
   },
   "include": ["**/*.ts"],        
   "exclude": ["node_modules", "dist"]

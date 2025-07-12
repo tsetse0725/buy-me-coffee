@@ -7,7 +7,6 @@ exports.updateProfile = exports.getProfileByUsername = exports.getAllProfiles = 
 const cloudinary_1 = require("../utils/cloudinary");
 const prisma_1 = require("../utils/prisma");
 const streamifier_1 = __importDefault(require("streamifier"));
-/* ───── Helper ───── */
 async function uploadToCloudinary(file, folder) {
     return new Promise((resolve, reject) => {
         const stream = cloudinary_1.cloudinary.uploader.upload_stream({ folder, resource_type: "image" }, (err, result) => {
@@ -18,7 +17,6 @@ async function uploadToCloudinary(file, folder) {
         streamifier_1.default.createReadStream(file.buffer).pipe(stream);
     });
 }
-/* ───── Profile Upload (avatar + cover) ───── */
 const uploadAvatar = async (req, res, next) => {
     try {
         const { name = "", about = "", socialMediaURL = "", userId, successMessage = "", } = req.body;
@@ -72,7 +70,6 @@ const uploadAvatar = async (req, res, next) => {
     }
 };
 exports.uploadAvatar = uploadAvatar;
-/* ───── Upload Cover only ───── */
 const uploadCover = async (req, res, next) => {
     try {
         const uid = Number(req.body.userId);
@@ -101,7 +98,6 @@ const uploadCover = async (req, res, next) => {
     }
 };
 exports.uploadCover = uploadCover;
-/* ───── Get Profile by ID ───── */
 const getProfile = async (req, res, next) => {
     try {
         const uid = Number(req.params.userId);
@@ -130,7 +126,6 @@ const getProfile = async (req, res, next) => {
     }
 };
 exports.getProfile = getProfile;
-/* ───── Get All Profiles ───── */
 const getAllProfiles = async (req, res, next) => {
     try {
         const profiles = await prisma_1.prisma.profile.findMany({
@@ -161,7 +156,6 @@ const getAllProfiles = async (req, res, next) => {
     }
 };
 exports.getAllProfiles = getAllProfiles;
-/* ───── Get Profile by Username ───── */
 const getProfileByUsername = async (req, res, next) => {
     try {
         const { username } = req.params;
@@ -188,12 +182,11 @@ const getProfileByUsername = async (req, res, next) => {
     }
 };
 exports.getProfileByUsername = getProfileByUsername;
-/* ───── PATCH /profiles/:userId ───── */
 const updateProfile = async (req, res, next) => {
     try {
         const uid = Number(req.params.userId);
-        console.log("🟡 userId:", uid);
-        console.log("🟢 Request Body:", req.body);
+        console.log(" userId:", uid);
+        console.log(" Request Body:", req.body);
         if (isNaN(uid)) {
             res.status(400).json({ message: "Invalid userId" });
             return;
@@ -217,12 +210,12 @@ const updateProfile = async (req, res, next) => {
             data,
         });
         res.status(200).json({
-            message: "✅ Profile updated successfully",
+            message: " Profile updated successfully",
             updatedProfile: updated,
         });
     }
     catch (err) {
-        console.error("❌ updateProfile error:", err);
+        console.error(" updateProfile error:", err);
         next(err);
     }
 };
