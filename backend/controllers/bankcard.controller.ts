@@ -1,18 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../utils/prisma";
 
-interface BankCardBody {
-  userId: string | number;
-  country: string;
-  firstName: string;
-  lastName: string;
-  cardNumber: string;
-  expiryMonth: string | number;
-  expiryYear: string | number;
+/* ────────────── Helper functions ────────────── */
+function isValidUserId(id: string | number): number | null {
+  const num = Number(id);
+  return isNaN(num) ? null : num;
 }
 
+function maskCardNumber(cardNumber: string): string {
+  return /^\d{16}$/.test(cardNumber)
+    ? cardNumber.replace(/\d{12}(\d{4})/, "****-****-****-$1")
+    : cardNumber;
+}
+
+/* ────────────── POST /bankcards – upsert card ────────────── */
 export const createOrUpdateBankCard = async (
-  req: Request<{}, any, BankCardBody>,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -27,8 +30,8 @@ export const createOrUpdateBankCard = async (
       expiryYear,
     } = req.body;
 
-    const uid = Number(userId);
-    if (isNaN(uid)) {
+    const uid = isValidUserId(userId);
+    if (!uid) {
       res.status(400).json({ message: "Invalid userId" });
       return;
     }
@@ -86,20 +89,21 @@ export const createOrUpdateBankCard = async (
       },
     });
 
-    res.status(201).json({ message: "Bank card saved" });
+    res.status(200).json({ message: "Bank card saved" });
   } catch (err) {
     next(err);
   }
 };
 
+/* ────────────── GET /bankcards/:userId ────────────── */
 export const getBankCard = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const uid = Number(req.params.userId);
-    if (isNaN(uid)) {
+    const uid = isValidUserId(req.params.userId);
+    if (!uid) {
       res.status(400).json({ message: "Invalid userId" });
       return;
     }
@@ -123,30 +127,32 @@ export const getBankCard = async (
       return;
     }
 
-    const maskedNumber = card.cardNumber.replace(
-      /\d{12}(\d{4})/,
-      "****-****-****-$1"
-    );
-
-    res.json({ ...card, cardNumber: maskedNumber });
+    res.json({
+      ...card,
+      cardNumber: maskCardNumber(card.cardNumber),
+    });
   } catch (err) {
     next(err);
   }
 };
 
+/* ────────────── DELETE /bankcards/:userId ────────────── */
 export const deleteBankCard = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const uid = Number(req.params.userId);
-    if (isNaN(uid)) {
+    const uid = isValidUserId(req.params.userId);
+    if (!uid) {
       res.status(400).json({ message: "Invalid userId" });
       return;
     }
 
-    const exists = await prisma.bankCard.findUnique({ where: { userId: uid } });
+    const exists = await prisma.bankCard.findUnique({
+      where: { userId: uid },
+    });
+
     if (!exists) {
       res.status(404).json({ message: "Card not found" });
       return;

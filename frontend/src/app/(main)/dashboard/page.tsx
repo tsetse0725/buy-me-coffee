@@ -27,7 +27,8 @@ export default function DashboardPage() {
         setRange={setRange}
       />
 
-      <RecentTransactions range={range} />
+
+      <RecentTransactions range={range} userId={user.id} />
     </div>
   );
 }

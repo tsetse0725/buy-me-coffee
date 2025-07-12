@@ -9,7 +9,10 @@ import type { ReactNode } from "react";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const showSidebar = pathname.startsWith("/dashboard");
+
+const showSidebar = ["/dashboard", "/explore", "/account"].some((path) =>
+  pathname.startsWith(path)
+);
 
   return (
     <UserProvider>

@@ -1,4 +1,4 @@
-export interface Profile {
+export type Profile = {
   id: number;
   userId: number;
   username: string;
@@ -6,9 +6,10 @@ export interface Profile {
   about: string;
   avatarImage: string;
   socialMediaURL: string;
-  coverImage?: string;
-  successMessage?: string;
-}
+  coverImage: string;
+  successMessage: string;
+};
+
 
 export interface User {
   id: number;

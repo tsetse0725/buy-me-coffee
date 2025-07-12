@@ -1,9 +1,8 @@
-/* src/app/(main)/login/page.tsx */
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,11 +18,9 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const params = useSearchParams();
-  const justSignedUp = params.get("justSignedUp") === "1";
 
   /* ───── context ───── */
-  const { user, profile, initializing, refreshAuth } = useAuth(); // refreshAuth нэмэгдсэн
+  const { user, profile, initializing, refreshAuth } = useAuth();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -98,12 +95,6 @@ export default function LoginPage() {
         className="flex w-full max-w-sm flex-col gap-4"
       >
         <h1 className="mb-2 text-2xl font-semibold">Welcome back</h1>
-
-        {justSignedUp && (
-          <p className="text-center text-green-600 text-sm">
-            ✅ Account created! Please log in.
-          </p>
-        )}
 
         <div className="flex flex-col gap-1">
           <label htmlFor="email" className="text-sm">

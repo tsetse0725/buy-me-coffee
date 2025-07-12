@@ -9,6 +9,7 @@ import profileRoutes from "./routes/profile.routes";
 import bankcardRoutes from "./routes/bankcard.routes";
 import donationRoutes from "./routes/donation.routes";
 import mockpayRoutes from "./routes/mockpay.routes";
+import userRoutes from "./routes/user.routes"; // ✅ нэмсэн
 
 const app = express();
 
@@ -38,7 +39,7 @@ safeUse("/profiles", profileRoutes);
 safeUse("/bankcards", bankcardRoutes);
 safeUse("/donations", donationRoutes);
 safeUse("/mockpay", mockpayRoutes);
-
+safeUse("/users", userRoutes); 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error("", err);
   res.status(500).json({ message: err.message ?? "Internal error" });
@@ -47,7 +48,4 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 const PORT = Number(process.env.PORT) || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-
-  if (process.env.NODE_ENV !== "production") {
-  }
 });

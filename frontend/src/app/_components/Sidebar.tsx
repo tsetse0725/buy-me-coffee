@@ -25,15 +25,15 @@ export default function Sidebar() {
         Explore
       </Link>
 
-      <Link
-        href={`/${user.username}`}
-        prefetch={false}
-        target="_blank"
-        className="flex items-center gap-1 rounded px-3 py-2 font-medium hover:bg-gray-100"
-      >
-        View&nbsp;page
-        <ExternalLink size={14} className="opacity-60" />
-      </Link>
+<Link
+  href={`/${user.username}`}
+  prefetch={false}
+  className="flex items-center gap-1 rounded px-3 py-2 font-medium hover:bg-gray-100"
+>
+  View&nbsp;page
+  <ExternalLink size={14} className="opacity-60" />
+</Link>
+
 
       <Link
         href="/account"

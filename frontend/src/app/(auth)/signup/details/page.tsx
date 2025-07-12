@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,15 +20,22 @@ type FormData = z.infer<typeof schema>;
 
 export default function SignupDetails() {
   const router = useRouter();
-  const params = useSearchParams();
-  const username = params.get("username") ?? "";
-
-  useEffect(() => {
-    if (!username) router.replace("/signup");
-  }, [username, router]);
-
+  const [username, setUsername] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // ✅ `username`-г search-аас авах
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const uname = params.get("username") ?? "";
+      if (!uname) {
+        router.replace("/signup");
+      } else {
+        setUsername(uname);
+      }
+    }
+  }, [router]);
 
   const {
     register,
@@ -49,8 +56,7 @@ export default function SignupDetails() {
       );
 
       localStorage.removeItem("token");
-
-      router.replace("/login?justSignedUp=1");
+      router.replace("/login"); // 🎯 justSignedUp устсан тул шууд login руу
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const apiErr = err as AxiosError<{ message?: string }>;

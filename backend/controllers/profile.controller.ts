@@ -4,6 +4,7 @@ import { prisma } from "../utils/prisma";
 import streamifier from "streamifier";
 import type { Express } from "express";
 
+/* ───── Helper ───── */
 async function uploadToCloudinary(
   file: Express.Multer.File,
   folder: string
@@ -20,16 +21,9 @@ async function uploadToCloudinary(
   });
 }
 
-interface ProfileBody {
-  name: string;
-  about: string;
-  socialMediaURL: string;
-  userId: string;
-  successMessage?: string;
-}
-
+/* ───── Profile Upload (avatar + cover) ───── */
 export const uploadAvatar = async (
-  req: Request<{}, any, ProfileBody>,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -98,6 +92,7 @@ export const uploadAvatar = async (
   }
 };
 
+/* ───── Upload Cover only ───── */
 export const uploadCover = async (
   req: Request,
   res: Response,
@@ -113,7 +108,6 @@ export const uploadCover = async (
 
     const { secure_url } = await uploadToCloudinary(file, "covers");
 
-    /* create if missing, else update */
     await prisma.profile.upsert({
       where: { userId: uid },
       create: {
@@ -134,6 +128,7 @@ export const uploadCover = async (
   }
 };
 
+/* ───── Get Profile by ID ───── */
 export const getProfile = async (
   req: Request,
   res: Response,
@@ -167,6 +162,43 @@ export const getProfile = async (
   }
 };
 
+/* ───── Get All Profiles ───── */
+export const getAllProfiles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const profiles = await prisma.profile.findMany({
+      include: {
+        user: {
+          select: { username: true },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const result = profiles.map((profile) => ({
+      id: profile.id,
+      userId: profile.userId,
+      username: profile.user.username,
+      name: profile.name,
+      about: profile.about,
+      avatarImage: profile.avatarImage,
+      socialMediaURL: profile.socialMediaURL,
+      coverImage: profile.backgroundImage,
+      successMessage: profile.successMessage,
+    }));
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ───── Get Profile by Username ───── */
 export const getProfileByUsername = async (
   req: Request,
   res: Response,
@@ -196,3 +228,52 @@ export const getProfileByUsername = async (
     next(err);
   }
 };
+
+/* ───── PATCH /profiles/:userId ───── */
+export const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const uid = Number(req.params.userId);
+    console.log("🟡 userId:", uid);
+    console.log("🟢 Request Body:", req.body);
+
+    if (isNaN(uid)) {
+      res.status(400).json({ message: "Invalid userId" });
+      return;
+    }
+
+    const { name, about, socialMediaURL, successMessage } = req.body;
+
+    if (!name && !about && !socialMediaURL && !successMessage) {
+      res.status(400).json({ message: "No data to update" });
+      return;
+    }
+
+    const data: any = {};
+
+    if (typeof name === "string" && name.trim()) data.name = name.trim();
+    if (typeof about === "string" && about.trim()) data.about = about.trim();
+    if (typeof socialMediaURL === "string" && socialMediaURL.trim())
+      data.socialMediaURL = socialMediaURL.trim();
+    if (typeof successMessage === "string" && successMessage.trim())
+      data.successMessage = successMessage.trim();
+
+    const updated = await prisma.profile.update({
+      where: { userId: uid },
+      data,
+    });
+
+    res.status(200).json({
+      message: "✅ Profile updated successfully",
+      updatedProfile: updated,
+    });
+  } catch (err) {
+    console.error("❌ updateProfile error:", err);
+    next(err);
+  }
+};
+
+

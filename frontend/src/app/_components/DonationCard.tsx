@@ -41,7 +41,7 @@ export default function DonationCard({ donation }: Props) {
   const [showFull, setShowFull] = useState(false);
   const { donor } = donation;
 
-  const avatar = donor.avatarImage || null;
+  const avatar = donor.profile?.avatarImage || null;
   const initials = donor.username
     .split(" ")
     .map((s) => s[0])

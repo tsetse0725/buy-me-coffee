@@ -1,41 +1,72 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ChevronDown } from "lucide-react";
 import DonationCard from "./DonationCard";
 
-import { DEMO_DONATIONS as RAW_DONATIONS } from "@/app/_components/demo-donations";
-
 interface Props {
+  userId: number;
   range: "last30" | "last90" | "all";
+}
+
+interface SupporterDonation {
+  id: number;
+  amount: number;
+  specialMessage: string;
+  createdAt: string;
+  donor: {
+    username: string;
+    socialURLOrBuyMeACoffee?: string;
+    profile?: {
+      avatarImage?: string | null;
+    };
+  };
 }
 
 const AMOUNTS = [1, 2, 5, 10] as const;
 
-export default function RecentTransactions({ range }: Props) {
+export default function RecentTransactions({ userId, range }: Props) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<number[]>([]);
+  const [donations, setDonations] = useState<SupporterDonation[]>([]);
 
-  const toggle = (amt: number) =>
+  const toggle = (amt: number) => {
     setSelected((prev) =>
       prev.includes(amt) ? prev.filter((n) => n !== amt) : [...prev, amt]
     );
+  };
 
-  const donations = useMemo(() => {
+  useEffect(() => {
+    const fetchDonations = async () => {
+      try {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${baseUrl}/donations/recent/${userId}`);
+        const json = await res.json();
+        setDonations(json.donations || []);
+      } catch (err) {
+        console.error("❌ Failed to fetch donations:", err);
+      }
+    };
+
+    fetchDonations();
+  }, [userId]);
+
+  const filtered = useMemo(() => {
     const now = Date.now();
-    const maxDays =
-      range === "last30" ? 30 : range === "last90" ? 90 : Infinity;
+    const maxDays = range === "last30" ? 30 : range === "last90" ? 90 : Infinity;
 
-    return RAW_DONATIONS.filter((d) => {
+    return donations.filter((d) => {
       const diffMs = now - new Date(d.createdAt).getTime();
       const inRange = diffMs <= maxDays * 24 * 60 * 60 * 1000;
       const inAmount = selected.length === 0 || selected.includes(d.amount);
       return inRange && inAmount;
     });
-  }, [range, selected]);
+  }, [donations, selected, range]);
 
   return (
     <section className="space-y-4 relative">
+      {/* ───── Header ───── */}
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold">Recent transactions</h3>
 
@@ -68,12 +99,15 @@ export default function RecentTransactions({ range }: Props) {
         </div>
       </div>
 
+      {/* ───── Donation List ───── */}
       <div className="flex flex-col space-y-4">
-        {donations.length ? (
-          donations.map((d) => <DonationCard key={d.id} donation={d} />)
+        {filtered.length ? (
+          filtered.map((d) => (
+            <DonationCard key={d.id} donation={d} />
+          ))
         ) : (
           <>
-            {selected.includes(5) ? (
+            {selected.length === 0 ? (
               <div className="border rounded-xl px-6 py-10 text-center text-gray-600 space-y-2">
                 <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
                   <ChevronDown

@@ -102,7 +102,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     profile,
     bankCard,
     initializing,
-    refreshAuth: loadAuth,
+    refreshAuth: loadAuth,      // ✅ refresh logic
     setUser,
     setProfile,
     setBankCard,

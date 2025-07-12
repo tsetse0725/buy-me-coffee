@@ -1,15 +1,27 @@
 export interface Donor {
   username: string;
-  avatarImage?: string | null;
+  profile?: {
+    avatarImage?: string | null;
+  };
+}
+
+export interface DonationApi {
+  id: number;
+  amount: number;
+  specialMessage: string;
+  donor: {
+    username: string;
+    avatarImage?: string | null;
+  };
 }
 
 export interface Donation {
   id: number;
   amount: number;
   specialMessage: string;
-  socialURLOrBuyMeACoffee: string;
+  socialURLOrBuyMeACoffee?: string; 
+  createdAt: string; 
   donor: Donor;
-  createdAt: string;
 }
 
 export interface User {
@@ -20,4 +32,18 @@ export interface User {
 export interface Profile {
   name?: string;
   avatarImage?: string;
+}
+
+export interface Supporter {
+  id: number;
+  amount: number;
+  specialMessage: string;
+  createdAt: string;
+  socialURLOrBuyMeACoffee?: string; 
+  donor: {
+    username: string;
+    profile?: {
+      avatarImage?: string | null;
+    };
+  };
 }

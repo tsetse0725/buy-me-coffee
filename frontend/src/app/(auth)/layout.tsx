@@ -11,17 +11,24 @@ export default function AuthLayout({
   return (
     <UserProvider>
       <div className="w-screen h-screen flex">
+        {/* ───── Left Yellow Panel ───── */}
         <div className="w-1/2 h-full bg-[#FFDD00] flex flex-col items-center justify-center text-center px-8 relative">
-          <div className="absolute top-6 left-6 text-black font-semibold text-lg flex items-center">
+          
+          {/* Logo + Brand Name */}
+          <div className="absolute top-6 left-6 flex items-center space-x-2">
             <Image
-              src="/Logo.png"
+              src="/coffee.png"
               alt="Buy Me Coffee logo"
-              width={120}
+              width={32}
               height={32}
               priority
             />
+            <span className="text-black font-semibold text-lg">
+              Buy Me Coffee
+            </span>
           </div>
 
+          {/* Illustration */}
           <Image
             src="/illustration.png"
             alt="Coffee cup"
@@ -30,15 +37,16 @@ export default function AuthLayout({
             className="w-40 h-40 mb-8"
           />
 
+          {/* Title & Description */}
           <h2 className="text-xl font-bold text-black mb-2">
             Fund your creative work
           </h2>
           <p className="text-black text-sm max-w-xs">
-            Accept support. Start a membership. Setup a shop. It’s easier than
-            you think.
+            Accept support. Start a membership. Setup a shop. It’s easier than you think.
           </p>
         </div>
 
+        {/* ───── Right White Panel ───── */}
         <div className="w-1/2 h-full bg-white flex items-center justify-center">
           {children}
         </div>

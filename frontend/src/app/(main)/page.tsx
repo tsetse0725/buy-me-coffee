@@ -1,6 +1,5 @@
-export default function HomePage(){
-    return(
-<div>
-    <p>home page</p>
-</div>
-)}
+import { redirect } from "next/navigation";
+
+export default function HomePage() {
+  redirect("/login"); // эсвэл "/dashboard", "/profile" г.м
+}

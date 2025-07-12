@@ -3,30 +3,34 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Modal from "@/app/_components/modal";
 import EditProfileForm from "@/app/_components/EditProfileForm";
 import RecentSupporters from "@/app/_components/RecentSupporters";
+
 import type { Profile } from "@/app/types/user";
 
 type Props = {
   profile: Profile;
-  isOwner?: boolean;
+  isOwner: boolean;
 };
 
 export default function ProfileCard({ profile, isOwner }: Props) {
   const [open, setOpen] = useState(false);
-  const firstName = profile.name?.split(" ")[0] || profile.name;
+
+  const firstName = profile.name.split(" ").filter(Boolean)[0] || "User";
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
+      {/* ── Header + About ── */}
       <Card className="p-6 space-y-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <Image
               src={profile.avatarImage || "/default-avatar.jpg"}
-              alt={profile.name ?? "Avatar"}
+              alt={profile.name}
               width={72}
               height={72}
               className="rounded-full object-cover"
@@ -53,11 +57,12 @@ export default function ProfileCard({ profile, isOwner }: Props) {
         <div>
           <h2 className="text-lg font-semibold mb-2">About {firstName}</h2>
           <p className="text-muted-foreground whitespace-pre-line">
-            {profile.about || "—"}
+            {profile.about.trim() || "—"}
           </p>
         </div>
       </Card>
 
+      {/* ── Social media ── */}
       {profile.socialMediaURL && (
         <Card className="p-6 space-y-2">
           <h2 className="text-lg font-semibold">Social media URL</h2>
@@ -72,12 +77,14 @@ export default function ProfileCard({ profile, isOwner }: Props) {
         </Card>
       )}
 
+      {/* ── Supporters ── */}
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Recent Supporters</h2>
-        <RecentSupporters />
+        <RecentSupporters userId={profile.userId} initialCount={4} />
       </Card>
 
-      {isOwner && open && (
+      {/* ── Modal (Edit Profile) ── */}
+      {open && (
         <Modal onClose={() => setOpen(false)}>
           <EditProfileForm onClose={() => setOpen(false)} />
         </Modal>
