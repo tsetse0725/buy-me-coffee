@@ -32,7 +32,7 @@ export default function PasswordForm() {
 
   const onSubmit = async (data: PasswordFormData) => {
     if (!user?.id) {
-      alert("❗User not logged in");
+      alert("User not logged in");
       return;
     }
 
@@ -40,7 +40,7 @@ export default function PasswordForm() {
       setLoading(true);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}/password`, // ⬅️ Зөв route энд!
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}/password`, 
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -50,10 +50,10 @@ export default function PasswordForm() {
 
       if (!res.ok) throw new Error("Failed to update password");
 
-      alert("✅ Password updated successfully!");
+      alert(" Password updated successfully!");
     } catch (err) {
-      console.error("❌ Error updating password:", err);
-      alert("⚠️ Failed to update password");
+      console.error(" Error updating password:", err);
+      alert(" Failed to update password");
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export default function PasswordForm() {
     >
       <h2 className="text-lg font-semibold">Set a new password</h2>
 
-      {/* 🔐 New password */}
+
       <div>
         <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
           New password
@@ -83,7 +83,6 @@ export default function PasswordForm() {
         )}
       </div>
 
-      {/* 🔁 Confirm password */}
       <div>
         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
           Confirm password
@@ -100,7 +99,7 @@ export default function PasswordForm() {
         )}
       </div>
 
-      {/* 💾 Save Button */}
+
       <div className="text-center">
         <button
           type="submit"

@@ -1,4 +1,4 @@
-// src/app/(main)/account/page.tsx
+
 "use client";
 
 import AccountForm from "@/app/_components/AccountForm";

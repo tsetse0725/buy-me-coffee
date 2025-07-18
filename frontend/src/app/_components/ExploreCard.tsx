@@ -19,7 +19,7 @@ export default function ExploreCard({
 }: Props) {
   return (
     <div className="border rounded-xl p-6 space-y-4 hover:bg-gray-50 transition relative">
-      {/* 🟡 View Profile – Баруун дээд буланд */}
+
       <Link
         href={`/${username}`}
         className="absolute top-4 right-4 bg-gray-100 px-4 py-2 rounded-md text-sm font-medium text-gray-800 flex items-center gap-1 hover:bg-gray-200 transition"
@@ -27,7 +27,7 @@ export default function ExploreCard({
         View profile <ExternalLink size={16} />
       </Link>
 
-      {/* 🟢 Profile image + name */}
+
       <div className="flex items-center gap-4">
         {avatarImage ? (
           <Image
@@ -45,7 +45,7 @@ export default function ExploreCard({
         <h2 className="text-xl font-semibold">{name}</h2>
       </div>
 
-      {/* 🔵 About + Social media – 2 багана */}
+
       <div className="flex flex-col md:flex-row justify-between gap-4">
         <div className="flex-1">
           <p className="font-medium text-gray-800 mb-1">About {name}</p>

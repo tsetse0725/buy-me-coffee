@@ -69,7 +69,7 @@ export default function PaymentDetailsForm() {
         setValue("expiryMonth", card.expiryMonth);
         setValue("expiryYear", card.expiryYear);
       } catch {
-        console.error("❌ Failed to fetch card data");
+        console.error(" Failed to fetch card data");
       }
     };
 

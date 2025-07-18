@@ -12,7 +12,7 @@ function maskCardNumber(cardNumber: string): string {
     : cardNumber;
 }
 
-/* ───────────── POST /bankcards ───────────── */
+
 export const createOrUpdateBankCard = async (
   req: Request,
   res: Response,
@@ -94,7 +94,7 @@ export const createOrUpdateBankCard = async (
   }
 };
 
-/* ───────────── GET /bankcards/:userId ───────────── */
+
 export const getBankCard = async (
   req: Request,
   res: Response,
@@ -146,7 +146,7 @@ export const getBankCard = async (
   }
 };
 
-/* ───────────── DELETE /bankcards/:userId ───────────── */
+
 export const deleteBankCard = async (
   req: Request,
   res: Response,

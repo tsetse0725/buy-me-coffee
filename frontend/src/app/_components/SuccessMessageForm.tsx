@@ -30,7 +30,7 @@ export default function SuccessMessageForm() {
     },
   });
 
-  // 🔁 profile өөрчлөгдөх үед form-ийн утгыг шинэчилнэ
+
   useEffect(() => {
     if (profile?.successMessage) {
       reset({ successMessage: profile.successMessage });
@@ -53,16 +53,16 @@ export default function SuccessMessageForm() {
 
       if (!res.ok) {
         const errorText = await res.text();
-        console.error("❌ RESPONSE STATUS:", res.status);
-        console.error("❌ RESPONSE TEXT:", errorText);
+        console.error("RESPONSE STATUS:", res.status);
+        console.error("RESPONSE TEXT:", errorText);
         throw new Error(`Failed to save: ${errorText}`);
       }
 
-      console.log("✅ Saved to backend");
+      console.log(" Saved to backend");
 
-      await refreshAuth(); // ⬅️ context дах profile шинэчлэгдэнэ
+      await refreshAuth(); 
     } catch (err) {
-      console.error("❌ Error saving message:", err);
+      console.error("Error saving message:", err);
     }
   };
 

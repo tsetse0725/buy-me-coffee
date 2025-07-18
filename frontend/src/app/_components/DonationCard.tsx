@@ -57,7 +57,7 @@ export default function DonationCard({ donation }: Props) {
 
   return (
     <div className="border border-gray-300 rounded-xl p-4 flex justify-between items-start gap-4 hover:bg-gray-50">
-      {/* left */}
+
       <div className="flex gap-4 max-w-[70%]">
         {avatar ? (
           <Image

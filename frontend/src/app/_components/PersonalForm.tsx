@@ -37,7 +37,7 @@ export default function PersonalInfoForm() {
     },
   });
 
-  // 🟡 profile шинэчлэгдэхэд form input-уудыг update хийх
+
   useEffect(() => {
     if (profile) {
       reset({
@@ -87,11 +87,11 @@ export default function PersonalInfoForm() {
 
       if (!res.ok) throw new Error("Failed to update profile");
 
-      await refreshAuth(); // profile дахин татах
+      await refreshAuth(); 
       setFile(null);
     } catch (err) {
-      console.error("❌ Error updating profile:", err);
-      alert("⚠️ Failed to update profile");
+      console.error(" Error updating profile:", err);
+      alert(" Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -104,7 +104,7 @@ export default function PersonalInfoForm() {
     >
       <h2 className="text-lg font-semibold">Personal Info</h2>
 
-      {/* 🖼 Avatar */}
+
       <div className="flex flex-col items-center gap-2">
         <span className="text-sm font-medium text-gray-700">Your photo</span>
         <div
@@ -131,7 +131,6 @@ export default function PersonalInfoForm() {
         />
       </div>
 
-      {/* ✏️ Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
           Name
@@ -147,7 +146,7 @@ export default function PersonalInfoForm() {
         )}
       </div>
 
-      {/* 📝 About */}
+
       <div>
         <label htmlFor="about" className="block text-sm font-medium text-gray-700 mb-1">
           About
@@ -160,7 +159,7 @@ export default function PersonalInfoForm() {
         />
       </div>
 
-      {/* 🔗 Social media URL */}
+
       <div>
         <label htmlFor="socialMediaURL" className="block text-sm font-medium text-gray-700 mb-1">
           Social media URL
@@ -176,7 +175,7 @@ export default function PersonalInfoForm() {
         )}
       </div>
 
-      {/* 💾 Save */}
+
       <div className="text-center">
         <button
           type="submit"

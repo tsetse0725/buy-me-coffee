@@ -33,7 +33,7 @@ export default function RecentSupporters({
 
         const res = await fetch(`${baseUrl}/donations/recent/${userId}`);
         const json = await res.json();
-              console.log("✅ Supporters data:", json.donations); 
+              console.log(" Supporters data:", json.donations); 
 
 const formatted = (json.donations as Donation[]).map((d) => ({
   id: d.id,
@@ -45,7 +45,7 @@ const formatted = (json.donations as Donation[]).map((d) => ({
 
         setSupporters(formatted);
       } catch (err) {
-        console.error("❌ Failed to load supporters:", err);
+        console.error("Failed to load supporters:", err);
       }
     };
 

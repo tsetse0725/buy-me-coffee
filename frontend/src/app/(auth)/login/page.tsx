@@ -9,7 +9,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/app/_components/UserProvider";
 
-/* ───── validation schema ───── */
+
 const schema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Min 8 characters"),
@@ -19,12 +19,12 @@ type FormData = z.infer<typeof schema>;
 export default function LoginPage() {
   const router = useRouter();
 
-  /* ───── context ───── */
+
   const { user, profile, initializing, refreshAuth } = useAuth();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  /* ───── react-hook-form ───── */
+
   const {
     register,
     handleSubmit,
@@ -34,7 +34,7 @@ export default function LoginPage() {
     mode: "onChange",
   });
 
-  /* ───── redirect logic ───── */
+
   useEffect(() => {
     if (!initializing && user) {
       if (profile) {
@@ -45,12 +45,12 @@ export default function LoginPage() {
     }
   }, [user, profile, initializing, router]);
 
-  /* ───── UI guard ───── */
+
   if (initializing)
     return <div className="p-6 text-center">Checking session…</div>;
   if (user) return null;
 
-  /* ───── form submit ───── */
+
   const onSubmit = async (data: FormData) => {
     try {
       setErrorMsg(null);
@@ -62,10 +62,10 @@ export default function LoginPage() {
       );
       localStorage.setItem("token", res.data.token);
 
-      // ⟳ Profile болон user context-оор шинэчлэх
+
       await refreshAuth();
 
-      // ✅ Profile байгаа эсэхээр redirect хийх
+
       if (profile) router.replace("/dashboard");
       else router.replace("/profile");
     } catch (err) {

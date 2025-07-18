@@ -45,7 +45,7 @@ export default function RecentTransactions({ userId, range }: Props) {
         const json = await res.json();
         setDonations(json.donations || []);
       } catch (err) {
-        console.error("❌ Failed to fetch donations:", err);
+        console.error(" Failed to fetch donations:", err);
       }
     };
 
@@ -66,7 +66,7 @@ export default function RecentTransactions({ userId, range }: Props) {
 
   return (
     <section className="space-y-4 relative">
-      {/* ───── Header ───── */}
+
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold">Recent transactions</h3>
 
@@ -99,7 +99,7 @@ export default function RecentTransactions({ userId, range }: Props) {
         </div>
       </div>
 
-      {/* ───── Donation List ───── */}
+
       <div className="flex flex-col space-y-4">
         {filtered.length ? (
           filtered.map((d) => (

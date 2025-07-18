@@ -24,7 +24,7 @@ export default function SignupDetails() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ `username`-г search-аас авах
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -56,7 +56,7 @@ export default function SignupDetails() {
       );
 
       localStorage.removeItem("token");
-      router.replace("/login"); // 🎯 justSignedUp устсан тул шууд login руу
+      router.replace("/login"); 
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const apiErr = err as AxiosError<{ message?: string }>;

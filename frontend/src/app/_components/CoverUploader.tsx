@@ -22,13 +22,13 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 🟡 coverImage prop өөрчлөгдөхөд preview sync хийх
+
   useEffect(() => {
     setPreview(coverImage || "");
     setOriginal(coverImage || "");
   }, [coverImage]);
 
-  // 🧹 Component unmount үед blob URL цэвэрлэх
+
   useEffect(() => {
     return () => {
       if (preview.startsWith("blob:")) {
@@ -64,12 +64,12 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      await refreshAuth(); // ✅ профайл дахин татах
-      setOriginal(preview); // preview-г original болгож хадгалах
+      await refreshAuth();
+      setOriginal(preview); 
       setFile(null);
     } catch (err) {
-      console.error("❌ Failed to upload cover image:", err);
-      alert("⚠️ Cover зураг хадгалахад алдаа гарлаа.");
+      console.error(" Failed to upload cover image:", err);
+      alert(" Cover зураг хадгалахад алдаа гарлаа.");
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
 
   return (
     <div className="relative w-full aspect-[3/1] bg-gray-100 overflow-hidden">
-      {/* ✅ Cover зураг байгаа үед – Preview */}
+
       {!!preview ? (
         <Image
           src={preview}
@@ -86,11 +86,11 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
           className="object-cover"
         />
       ) : (
-        // 🕳️ Preview байхгүй үед placeholder харуулна
+
         <div className="w-full h-full bg-gray-100" />
       )}
 
-      {/* 📷 Add товч – preview ч байхгүй, файл ч сонгоогүй үед */}
+
       {isOwner && !file && !preview && (
         <button
           onClick={openPicker}
@@ -104,7 +104,7 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
         </button>
       )}
 
-      {/* 💾 Save / ❌ Cancel товч – файл сонгогдсон үед */}
+
       {isOwner && file && (
         <div className="absolute top-4 right-4 flex gap-2 z-20">
           <button
@@ -124,7 +124,6 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
         </div>
       )}
 
-      {/* 🔄 Change товч – preview байгаа үед */}
       {isOwner && !file && !!original && (
         <button
           onClick={openPicker}
@@ -137,7 +136,7 @@ export default function CoverUploader({ isOwner, coverImage }: Props) {
         </button>
       )}
 
-      {/* 📁 File input – зөвхөн эзэмшигчид */}
+
       {isOwner && (
         <input
           ref={inputRef}

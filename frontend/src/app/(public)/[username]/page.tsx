@@ -14,18 +14,18 @@ import type { Profile } from "@/app/types/user";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export default function PublicProfilePage() {
-  /* ── 1. route параметр ── */
+
   const { username } = useParams() as { username: string };
 
-  /* ── 2. logged-in user ── */
+
   const { user } = useAuth();
 
-  /* ── 3. харагдах профайл ── */
+
   const [viewProfile, setViewProfile] = useState<Profile | null | undefined>(
     undefined
   );
 
-  /* ── 4. fetch хийх ── */
+
   useEffect(() => {
     let cancelled = false;
 
@@ -50,11 +50,11 @@ export default function PublicProfilePage() {
     };
   }, [username]);
 
-  /* ── 5. эзэмшигч эсэх ── */
+
   const isOwner =
     user?.username === username || user?.id === viewProfile?.userId;
 
-  /* ── 6. Dev log ── */
+
   if (process.env.NODE_ENV !== "production") {
     console.log({
       urlUsername: username,
@@ -65,7 +65,7 @@ export default function PublicProfilePage() {
     });
   }
 
-  /* ── 7. Loading / Error ── */
+
   if (viewProfile === undefined) {
     return <div className="p-8 text-center">Loading profile…</div>;
   }
@@ -83,7 +83,7 @@ export default function PublicProfilePage() {
     );
   }
 
-  /* ── 8. Main UI ── */
+
   return (
     <div className="relative w-full">
       <CoverUploader
