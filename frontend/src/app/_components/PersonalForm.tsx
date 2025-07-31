@@ -17,7 +17,6 @@ type PersonalInfoFormData = z.infer<typeof schema>;
 
 export default function PersonalInfoForm() {
   const { user, profile, refreshAuth } = useAuth();
-
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string>(profile?.avatarImage || "");
   const [file, setFile] = useState<File | null>(null);
