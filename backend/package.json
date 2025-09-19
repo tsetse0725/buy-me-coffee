@@ -4,9 +4,11 @@
   "description": "",
   "type": "commonjs",
   "main": "dist/index.js",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon index.ts",
     "build": "tsc && prisma generate",
     "start": "NODE_ENV=production node dist/index.js",
     "prisma:generate": "prisma generate",
